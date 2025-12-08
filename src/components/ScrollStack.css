@@ -1,0 +1,9 @@
+.scroll-stack-card-content {
+  width: 100%;
+  height: auto;
+  position: relative;
+  /* Ensure 3D context is preserved if needed */
+  transform-style: preserve-3d;
+}
+
+/* Optional: Add some default styling if needed, but most is handled by Testimonials.jsx */
