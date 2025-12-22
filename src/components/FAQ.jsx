@@ -54,9 +54,9 @@ export default function FAQ() {
                         viewport={{ once: true }}
                     >
                         <div className="cta-text">
-                            <h3>Have a question? Let's discuss it now!</h3>
+                            <h3 style={{ fontFamily: 'var(--font-primary)' }}>Have a question? Let's discuss it now!</h3>
                         </div>
-                        <button className="btn-dark-pill">Book an appointment</button>
+                        <button className="btn-dark-pill" style={{ fontFamily: 'var(--font-primary)' }}>Book an appointment</button>
                     </motion.div>
                 </div>
 

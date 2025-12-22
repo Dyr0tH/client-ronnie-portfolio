@@ -1,13 +1,67 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-const HorizontalVideo = ({ src, className, style }) => {
+const LazyVideo = ({ src, style, forcedPause, ...props }) => {
+    const videoRef = useRef(null)
+    const [isLoaded, setIsLoaded] = useState(false)
+    const [isInView, setIsInView] = useState(false)
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsInView(true)
+                    observer.disconnect()
+                }
+            },
+            { rootMargin: '200px' }
+        )
+
+        if (videoRef.current) {
+            observer.observe(videoRef.current)
+        }
+
+        return () => observer.disconnect()
+    }, [])
+
+    useEffect(() => {
+        if (isInView) {
+            setIsLoaded(true)
+        }
+    }, [isInView])
+
+    useEffect(() => {
+        if (!isLoaded || !videoRef.current) return
+
+        if (forcedPause) {
+            videoRef.current.pause()
+        } else if (props.autoPlay) {
+            videoRef.current.play().catch(() => { /* Autoplay prevented */ })
+        }
+    }, [isLoaded, props.autoPlay, forcedPause])
+
+    return (
+        <video
+            ref={videoRef}
+            src={isLoaded ? src : undefined}
+            style={{
+                ...style,
+                opacity: isLoaded ? (style?.opacity !== undefined ? style.opacity : 1) : 0,
+                transition: 'opacity 0.5s ease'
+            }}
+            {...props}
+        />
+    )
+}
+
+const HorizontalVideo = ({ src, className, style, isPaused }) => {
     const [isMuted, setIsMuted] = useState(true)
 
     return (
         <div className={className} style={{ ...style, position: 'relative' }}>
-            <video
+            <LazyVideo
                 src={src}
+                forcedPause={isPaused}
                 autoPlay
                 muted={isMuted}
                 loop
@@ -109,7 +163,7 @@ const CGICard = ({ src, label, delay, isCenter = false }) => {
             />
 
             {/* Scanline Overlay */}
-            <div style={{
+            {/* <div style={{
                 position: 'absolute',
                 inset: 0,
                 background: 'linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.5) 50%)',
@@ -117,7 +171,7 @@ const CGICard = ({ src, label, delay, isCenter = false }) => {
                 pointerEvents: 'none',
                 opacity: 0.2,
                 zIndex: 1
-            }} />
+            }} /> */}
 
             {/* Label */}
             <div style={{
@@ -146,7 +200,245 @@ const CGICard = ({ src, label, delay, isCenter = false }) => {
     )
 }
 
-export default function Work() {
+const CGI_DATA = {
+    basic: [
+        { id: 1, type: 'vertical', src: '/cgi/basic/1.mp4' },
+        { id: 2, type: 'horizontal', src: '/cgi/basic/2.mp4' },
+        { id: 3, type: 'vertical', src: '/cgi/basic/3.mp4' },
+        { id: 4, type: 'horizontal', src: '/cgi/basic/4.mp4' },
+        { id: 5, type: 'vertical', src: '/cgi/basic/5.mp4' },
+        { id: 6, type: 'vertical', src: '/cgi/basic/6.mp4' },
+        { id: 7, type: 'horizontal', src: '/cgi/basic/7.mp4' },
+    ],
+    intermediate: [
+        { id: 1, type: 'horizontal', src: '/cgi/intermediate/1.mp4' },
+        { id: 2, type: 'vertical', src: '/cgi/intermediate/2.mp4' },
+        { id: 3, type: 'horizontal', src: '/cgi/intermediate/3.mp4' },
+        { id: 4, type: 'vertical', src: '/cgi/intermediate/4.mp4' },
+        { id: 5, type: 'horizontal', src: '/cgi/intermediate/5.mp4' },
+        { id: 6, type: 'vertical', src: '/cgi/intermediate/6.mp4' },
+        { id: 7, type: 'horizontal', src: '/cgi/intermediate/7.mp4' },
+    ],
+    advance: [
+        { id: 1, type: 'vertical', src: '/cgi/advance/1.mp4' },
+        { id: 2, type: 'vertical', src: '/cgi/advance/2.mp4' },
+        { id: 3, type: 'horizontal', src: '/cgi/advance/3.mp4' },
+        { id: 4, type: 'vertical', src: '/cgi/advance/4.mp4' },
+        { id: 5, type: 'horizontal', src: '/cgi/advance/5.mp4' },
+        { id: 6, type: 'vertical', src: '/cgi/advance/6.mp4' },
+        { id: 7, type: 'horizontal', src: '/cgi/advance/7 advance .mp4' },
+        { id: 8, type: 'vertical', src: '/cgi/advance/lens intro.mp4' },
+    ]
+}
+
+
+
+const TechCard = ({ item, isPaused }) => {
+    const [isHovered, setIsHovered] = useState(false)
+    const isVertical = item.type === 'vertical'
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            style={{
+                position: 'relative',
+                flexShrink: 0,
+                width: isVertical ? '300px' : '500px',
+                height: '450px',
+                background: '#050505',
+                cursor: 'pointer',
+                borderRadius: '4px',
+                marginRight: '20px',
+                overflow: 'hidden'
+            }}
+            whileHover={{
+                scale: 1.02,
+                filter: 'drop-shadow(0 0 20px rgba(47, 204, 239, 0.3))',
+                transition: { duration: 0.2 }
+            }}
+        >
+            {/* Tech Border */}
+            <div style={{
+                position: 'absolute',
+                inset: '2px',
+                border: '1px solid rgba(47, 204, 239, 0.3)',
+                zIndex: 2,
+                pointerEvents: 'none'
+            }} />
+
+            {/* Corner Accents - All 4 Corners */}
+            <div style={{ position: 'absolute', top: 0, left: 0, width: '20px', height: '20px', borderTop: '2px solid #2fccef', borderLeft: '2px solid #2fccef', zIndex: 3 }} />
+            <div style={{ position: 'absolute', top: 0, right: 0, width: '20px', height: '20px', borderTop: '2px solid #2fccef', borderRight: '2px solid #2fccef', zIndex: 3 }} />
+            <div style={{ position: 'absolute', bottom: 0, left: 0, width: '20px', height: '20px', borderBottom: '2px solid #2fccef', borderLeft: '2px solid #2fccef', zIndex: 3 }} />
+            <div style={{ position: 'absolute', bottom: 0, right: 0, width: '20px', height: '20px', borderBottom: '2px solid #2fccef', borderRight: '2px solid #2fccef', zIndex: 3 }} />
+
+            {/* Video Content */}
+            <LazyVideo
+                src={item.src}
+                forcedPause={isPaused}
+                autoPlay
+                loop
+                muted
+                playsInline
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    opacity: 0.9
+                }}
+            />
+
+            {/* Scanline Overlay */}
+            {/* <div style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.5) 50%)',
+                backgroundSize: '100% 4px',
+                pointerEvents: 'none',
+                opacity: 0.2,
+                zIndex: 1
+            }} /> */}
+        </motion.div>
+    )
+}
+
+const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
+    const [activeTab, setActiveTab] = useState('basic')
+
+    // Duplicate items for infinite marquee (3x to ensure enough length)
+    const items = [...CGI_DATA[activeTab], ...CGI_DATA[activeTab], ...CGI_DATA[activeTab]]
+
+    return (
+        <div className="cgi-gallery" style={{ width: '100%', position: 'relative' }}>
+            {/* Tabs */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginBottom: '3rem' }}>
+                {Object.keys(CGI_DATA).map(tab => (
+                    <button
+                        key={tab}
+                        onClick={() => setActiveTab(tab)}
+                        style={{
+                            padding: '10px 30px',
+                            background: activeTab === tab ? '#2fccef' : 'transparent',
+                            color: activeTab === tab ? '#000' : '#fff',
+                            border: '1px solid #2fccef',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em',
+                            fontWeight: 600,
+                            transition: 'all 0.3s ease'
+                        }}
+                    >
+                        {tab}
+                    </button>
+                ))}
+            </div>
+
+            {/* Marquee Gallery - CSS Animation for Pause on Hover */}
+            {/* Optimization: Hide marquee when popup is open to save resources */}
+            <div
+                className="marquee-container"
+                style={{
+                    display: selectedVideo ? 'none' : 'flex',
+                    width: '100%',
+                    overflow: 'hidden',
+                    maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'
+                }}
+            >
+                <div
+                    className="marquee-track"
+                    style={{
+                        display: 'flex',
+                        padding: '20px 0',
+                        width: 'max-content',
+                        animation: 'marquee 40s linear infinite'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.animationPlayState = 'paused'}
+                    onMouseLeave={(e) => e.currentTarget.style.animationPlayState = 'running'}
+                >
+                    {items.map((item, index) => (
+                        <div key={`${activeTab}-${item.id}-${index}`} onClick={() => onVideoSelect(item)}>
+                            <TechCard item={item} isPaused={!!selectedVideo} />
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Global Styles for Marquee */}
+            <style>{`
+                @keyframes marquee {
+                    from { transform: translateX(0); }
+                    to { transform: translateX(-33.33%); }
+                }
+            `}</style>
+
+            {/* Video Popup Modal moved to parent Work component for better control */}
+        </div>
+    )
+}
+
+export const PopupVideoPlayer = ({ src }) => {
+    const [isMuted, setIsMuted] = useState(false) // Default Unmuted as per request context implication
+    const videoRef = useRef(null)
+
+    return (
+        <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+            <video
+                src={src}
+                ref={videoRef}
+                autoPlay
+                loop
+                muted={isMuted}
+                playsInline
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain', // Ensure no cuts
+                    willChange: 'transform' // Optimization hint
+                }}
+            />
+
+            {/* Mute/Unmute Toggle */}
+            <button
+                onClick={() => setIsMuted(!isMuted)}
+                style={{
+                    position: 'absolute',
+                    bottom: '30px',
+                    right: '30px',
+                    padding: '10px 20px',
+                    background: 'rgba(0,0,0,0.7)',
+                    border: '1px solid #2fccef',
+                    borderRadius: '30px',
+                    color: '#fff',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    fontSize: '0.9rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em',
+                    backdropFilter: 'blur(4px)'
+                }}
+            >
+                {isMuted ? (
+                    <>
+                        <span style={{ color: '#ff4444' }}>🔇</span> Unmute
+                    </>
+                ) : (
+                    <>
+                        <span style={{ color: '#2fccef' }}>🔊</span> Mute
+                    </>
+                )}
+            </button>
+        </div>
+    )
+}
+
+export default function Work({ selectedVideo, onVideoSelect }) {
     const [activeIndex, setActiveIndex] = useState(1)
     const [isTransitioning, setIsTransitioning] = useState(false)
     const [isCenterMuted, setIsCenterMuted] = useState(true)
@@ -175,10 +467,14 @@ export default function Work() {
     }
 
     useEffect(() => {
+        if (selectedVideo) {
+            if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current)
+            return
+        }
         if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current)
         pauseTimeoutRef.current = setTimeout(goToNext, 2000)
         return () => clearTimeout(pauseTimeoutRef.current)
-    }, [activeIndex, goToNext])
+    }, [activeIndex, goToNext, selectedVideo])
 
     const getCardStyle = (index) => {
         let diff = (index - activeIndex + videos.length) % videos.length
@@ -252,8 +548,9 @@ export default function Work() {
                                         marginLeft: '-140px'
                                     }}
                                 >
-                                    <video
+                                    <LazyVideo
                                         src={video.src}
+                                        forcedPause={!!selectedVideo}
                                         autoPlay
                                         muted={isCenter ? isCenterMuted : true}
                                         loop
@@ -325,7 +622,11 @@ export default function Work() {
                             <span className="video-title">Top SaaS Marketing Video Example | HeyMyra</span>
                             <span className="menu-dots">⋮</span>
                         </div>
-                        <HorizontalVideo src="/horizontal-vids/1.mp4" className="featured-video" />
+                        <HorizontalVideo
+                            src="/horizontal-vids/1.mp4"
+                            className="featured-video"
+                            isPaused={!!selectedVideo}
+                        />
                     </motion.div>
 
                     <motion.div
@@ -336,7 +637,11 @@ export default function Work() {
                         transition={{ duration: 0.6 }}
                         style={{ background: '#000' }}
                     >
-                        <HorizontalVideo src="/horizontal-vids/2.mp4" className="featured-video" />
+                        <HorizontalVideo
+                            src="/horizontal-vids/2.mp4"
+                            className="featured-video"
+                            isPaused={!!selectedVideo}
+                        />
                     </motion.div>
                 </div>
 
@@ -349,17 +654,10 @@ export default function Work() {
                         High-End CGI<br />Visualizations
                     </h3>
 
-                    <div className="cgi-grid" style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        gap: '2rem',
-                        flexWrap: 'wrap',
-                        alignItems: 'center'
-                    }}>
-                        <CGICard src="/vertical-vids/1.mp4" label="Basic" delay={0} />
-                        <CGICard src="/vertical-vids/3.mp4" label="Advance" delay={0.2} isCenter={true} />
-                        <CGICard src="/vertical-vids/2.mp4" label="Intermediate" delay={0.4} />
-                    </div>
+                    <CGIGallery
+                        onVideoSelect={onVideoSelect}
+                        selectedVideo={selectedVideo}
+                    />
                 </div>
             </div>
         </section>

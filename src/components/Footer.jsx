@@ -130,7 +130,7 @@ export default function Footer() {
 
                                 <h3 style={{ color: '#fff', fontSize: '1.1rem', margin: '1.5rem 0 0.5rem' }}>4. Revisions</h3>
                                 <p style={{ marginBottom: '1rem' }}>
-                                    Each project includes [X] revisions. Additional revisions are possible with extra charges.
+                                    Video project includes 2 revisions & CGI project includes 1 revision. Additional revisions are possible with extra charges.
                                 </p>
 
                                 <h3 style={{ color: '#fff', fontSize: '1.1rem', margin: '1.5rem 0 0.5rem' }}>5. Work Process</h3>

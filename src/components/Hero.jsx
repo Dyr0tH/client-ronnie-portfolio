@@ -93,8 +93,7 @@ export default function Hero() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.8, delay: 0.4 }}
                     >
-                        We don't just edit videos.<br />
-                        We engineer high-retention assets that build your legacy.
+                        More than visuals, we engineer high-impact CGI and cinematic storytelling that stops the scroll, elevates brand perception, and drives growth.
                     </motion.p>
                 </div>
 
