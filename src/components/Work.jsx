@@ -309,8 +309,11 @@ const TechCard = ({ item, isPaused }) => {
 const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
     const [activeTab, setActiveTab] = useState('basic')
 
-    // Duplicate items for infinite marquee (3x to ensure enough length)
-    const items = [...CGI_DATA[activeTab], ...CGI_DATA[activeTab], ...CGI_DATA[activeTab]]
+    // Reduce duplicates on mobile: 2x instead of 3x to save memory
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+    const items = isMobile
+        ? [...CGI_DATA[activeTab], ...CGI_DATA[activeTab]]
+        : [...CGI_DATA[activeTab], ...CGI_DATA[activeTab], ...CGI_DATA[activeTab]]
 
     return (
         <div className="cgi-gallery" style={{ width: '100%', position: 'relative' }}>

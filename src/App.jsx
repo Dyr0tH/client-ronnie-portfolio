@@ -20,10 +20,46 @@ function App() {
   const [selectedVideo, setSelectedVideo] = useState(null)
 
   useEffect(() => {
-    // Initialize Lenis smooth scroll
+    const isMobile = window.innerWidth < 768
+
+    // Skip Lenis on mobile - use native scroll for better performance
+    if (isMobile) {
+      // Simulate initial progress
+      const timer = setInterval(() => {
+        setProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(timer)
+            return prev >= 100 ? 100 : 90
+          }
+          const nextProgress = prev + Math.random() * 12
+          return nextProgress >= 90 ? 90 : nextProgress
+        })
+      }, 150)
+
+      const handleLoad = () => {
+        clearInterval(timer)
+        setProgress(100)
+      }
+
+      if (document.readyState === 'complete') {
+        handleLoad()
+      } else {
+        window.addEventListener('load', handleLoad)
+      }
+
+      const failSafe = setTimeout(handleLoad, 6000)
+
+      return () => {
+        clearInterval(timer)
+        clearTimeout(failSafe)
+        window.removeEventListener('load', handleLoad)
+      }
+    }
+
+    // Desktop: Initialize Lenis smooth scroll
     const lenis = new Lenis({
       duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // https://www.desmos.com/calculator/brs54l4ba6
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
@@ -33,7 +69,6 @@ function App() {
       infinite: false,
     })
 
-    // Add lenis class to html for CSS targeting
     document.documentElement.classList.add('lenis')
 
     function raf(time) {
@@ -42,8 +77,6 @@ function App() {
     }
 
     requestAnimationFrame(raf)
-
-    // Log to window for easier debugging if needed
     window.lenis = lenis
 
     // Simulate initial progress
@@ -69,7 +102,6 @@ function App() {
       window.addEventListener('load', handleLoad)
     }
 
-    // Fail-safe: Force load after 6 seconds even if event hasn't fired
     const failSafe = setTimeout(handleLoad, 6000)
 
     return () => {

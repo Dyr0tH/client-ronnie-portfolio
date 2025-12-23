@@ -44,7 +44,8 @@ void mainImage(out vec4 o, vec2 C) {
   float i, d, z, T = iTime * uSpeed * uDirection;
   vec3 O, p, S;
 
-  float maxIter = mix(60.0, 25.0, uIsMobile);
+  // Ultra-aggressive mobile optimization: 5 iterations vs 60 on desktop
+  float maxIter = mix(60.0, 50.0, uIsMobile);
 
   for (vec2 r = iResolution.xy, Q; ++i < maxIter; O += o.w/d*o.xyz) {
     p = z*normalize(vec3(C-.5*r,r.y)); 
@@ -103,11 +104,14 @@ export const Plasma = ({
 
     const directionMultiplier = direction === 'reverse' ? -1.0 : 1.0;
 
+    const isMobile = window.innerWidth < 768;
+
     const renderer = new Renderer({
       webgl: 2,
       alpha: true,
       antialias: false,
-      dpr: Math.min(window.devicePixelRatio || 1, 2)
+      // Ultra-low DPR on mobile for massive performance gain
+      dpr: isMobile ? 0.75 : Math.min(window.devicePixelRatio || 1, 2)
     });
     const gl = renderer.gl;
     const canvas = gl.canvas;
@@ -131,8 +135,9 @@ export const Plasma = ({
         uScale: { value: scale },
         uOpacity: { value: opacity },
         uMouse: { value: new Float32Array([0, 0]) },
-        uMouseInteractive: { value: mouseInteractive ? 1.0 : 0.0 },
-        uIsMobile: { value: window.innerWidth < 768 ? 1.0 : 0.0 }
+        // Disable mouse interaction on mobile
+        uMouseInteractive: { value: (mouseInteractive && !isMobile) ? 1.0 : 0.0 },
+        uIsMobile: { value: isMobile ? 1.0 : 0.0 }
       }
     });
 
