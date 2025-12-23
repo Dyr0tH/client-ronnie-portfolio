@@ -31,6 +31,7 @@ uniform float uScale;
 uniform float uOpacity;
 uniform vec2 uMouse;
 uniform float uMouseInteractive;
+uniform float uIsMobile; // New uniform to reduce complexity
 out vec4 fragColor;
 
 void mainImage(out vec4 o, vec2 C) {
@@ -43,7 +44,9 @@ void mainImage(out vec4 o, vec2 C) {
   float i, d, z, T = iTime * uSpeed * uDirection;
   vec3 O, p, S;
 
-  for (vec2 r = iResolution.xy, Q; ++i < 60.; O += o.w/d*o.xyz) {
+  float maxIter = mix(60.0, 25.0, uIsMobile);
+
+  for (vec2 r = iResolution.xy, Q; ++i < maxIter; O += o.w/d*o.xyz) {
     p = z*normalize(vec3(C-.5*r,r.y)); 
     p.z -= 4.; 
     S = p;
@@ -128,7 +131,8 @@ export const Plasma = ({
         uScale: { value: scale },
         uOpacity: { value: opacity },
         uMouse: { value: new Float32Array([0, 0]) },
-        uMouseInteractive: { value: mouseInteractive ? 1.0 : 0.0 }
+        uMouseInteractive: { value: mouseInteractive ? 1.0 : 0.0 },
+        uIsMobile: { value: window.innerWidth < 768 ? 1.0 : 0.0 }
       }
     });
 

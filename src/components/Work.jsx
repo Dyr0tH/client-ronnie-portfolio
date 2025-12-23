@@ -315,23 +315,12 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
     return (
         <div className="cgi-gallery" style={{ width: '100%', position: 'relative' }}>
             {/* Tabs */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginBottom: '3rem' }}>
+            <div className="cgi-tabs-container">
                 {Object.keys(CGI_DATA).map(tab => (
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
-                        style={{
-                            padding: '10px 30px',
-                            background: activeTab === tab ? '#2fccef' : 'transparent',
-                            color: activeTab === tab ? '#000' : '#fff',
-                            border: '1px solid #2fccef',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.1em',
-                            fontWeight: 600,
-                            transition: 'all 0.3s ease'
-                        }}
+                        className={`cgi-tab-btn ${activeTab === tab ? 'active' : ''}`}
                     >
                         {tab}
                     </button>
@@ -481,8 +470,10 @@ export default function Work({ selectedVideo, onVideoSelect }) {
         if (diff > videos.length / 2) diff -= videos.length
 
         const isActive = diff === 0
-        const xOffset = diff * 220
-        const scale = isActive ? 1.2 : 0.8
+        const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+        const offsetMultiplier = isMobile ? 120 : 220
+        const xOffset = diff * offsetMultiplier
+        const scale = isActive ? (isMobile ? 1.1 : 1.2) : 0.8
         const opacity = isActive ? 1 : 0.5
         const rotateY = diff === 0 ? 0 : diff > 0 ? -15 : 15
         const zIndex = isActive ? 10 : 10 - Math.abs(diff)
@@ -542,10 +533,10 @@ export default function Work({ selectedVideo, onVideoSelect }) {
                                     style={{
                                         position: 'absolute',
                                         transformStyle: 'preserve-3d',
-                                        width: '280px',
-                                        height: '500px',
+                                        width: typeof window !== 'undefined' && window.innerWidth < 768 ? '180px' : '280px',
+                                        height: typeof window !== 'undefined' && window.innerWidth < 768 ? '320px' : '500px',
                                         left: '50%',
-                                        marginLeft: '-140px'
+                                        marginLeft: typeof window !== 'undefined' && window.innerWidth < 768 ? '-90px' : '-140px'
                                     }}
                                 >
                                     <LazyVideo

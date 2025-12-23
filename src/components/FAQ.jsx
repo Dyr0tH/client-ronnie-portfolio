@@ -54,41 +54,55 @@ export default function FAQ() {
                         viewport={{ once: true }}
                     >
                         <div className="cta-text">
-                            <h3 style={{ fontFamily: 'var(--font-primary)' }}>Have a question? Let's discuss it now!</h3>
+                            <h3>Have a question? Let's discuss it now!</h3>
                         </div>
-                        <button className="btn-dark-pill" style={{ fontFamily: 'var(--font-primary)' }}>Book an appointment</button>
+                        <button className="btn-dark-pill">Book an appointment</button>
                     </motion.div>
                 </div>
 
                 {/* Right Column */}
                 <div className="faq-right">
-                    <div className="faq-list">
+                    <div className="faq-list-sleek">
                         {faqs.map((faq, index) => (
                             <motion.div
                                 key={index}
-                                className={`faq-item-pill ${activeIndex === index ? 'active' : ''}`}
-                                onClick={() => toggleFAQ(index)}
-                                initial={{ opacity: 0, x: 20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
+                                className={`faq-item-sleek ${activeIndex === index ? 'active' : ''}`}
+                                initial={{ opacity: 0, y: 10 }}
+                                whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: index * 0.1 }}
                             >
-                                <div className="faq-question-pill">
+                                <button
+                                    className="faq-trigger-sleek"
+                                    onClick={() => toggleFAQ(index)}
+                                    aria-expanded={activeIndex === index}
+                                >
                                     <span>{faq.question}</span>
-                                    <div className="faq-icon-circle">
-                                        {activeIndex === index ? '−' : '+'}
-                                    </div>
-                                </div>
-                                <AnimatePresence>
+                                    <motion.svg
+                                        width="15"
+                                        height="15"
+                                        viewBox="0 0 15 15"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        animate={{ rotate: activeIndex === index ? 180 : 0 }}
+                                        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                                        className="faq-chevron"
+                                    >
+                                        <path d="M3.13523 6.15803C3.3241 5.95656 3.64057 5.94637 3.84203 6.13523L7.5 9.56464L11.158 6.13523C11.3594 5.94637 11.6759 5.95656 11.8648 6.15803C12.0536 6.35949 12.0434 6.67597 11.842 6.86484L7.84199 10.6148C7.64491 10.7996 7.35509 10.7996 7.15801 10.6148L3.15801 6.86484C2.95655 6.67597 2.94635 6.35949 3.13523 6.15803Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
+                                    </motion.svg>
+                                </button>
+                                <AnimatePresence initial={false}>
                                     {activeIndex === index && (
                                         <motion.div
-                                            className="faq-answer-pill"
                                             initial={{ height: 0, opacity: 0 }}
                                             animate={{ height: 'auto', opacity: 1 }}
                                             exit={{ height: 0, opacity: 0 }}
-                                            transition={{ duration: 0.3 }}
+                                            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                                            className="faq-content-sleek"
                                         >
-                                            <p>{faq.answer}</p>
+                                            <div className="faq-answer-inner">
+                                                {faq.answer}
+                                            </div>
                                         </motion.div>
                                     )}
                                 </AnimatePresence>

@@ -51,96 +51,92 @@ export default function Hero() {
                 />
             </div>
 
-            <div className="hero-content-scattered">
-                <div className="hero-left-zone">
-                    <motion.h1
-                        className="hero-title-scattered"
-                        style={{ y }}
-                    >
-                        <span className="line">
-                            <motion.span
-                                initial={{ y: "100%" }}
-                                animate={{ y: 0 }}
-                                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                            >
-                                Visual
-                            </motion.span>
-                        </span>
-                        <span className="line">
-                            <motion.span
-                                initial={{ y: "100%" }}
-                                animate={{ y: 0 }}
-                                transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                                className="pb-2" // Added padding-bottom to fix clipping
-                            >
-                                Storytelling
-                            </motion.span>
-                        </span>
-                        <span className="line">
-                            <motion.span
-                                initial={{ y: "100%" }}
-                                animate={{ y: 0 }}
-                                transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                            >
-                                For <span className="highlight-text">Visionaries.</span>
-                            </motion.span>
-                        </span>
-                    </motion.h1>
+            <div className="hero-content-centered">
+                <motion.h1
+                    className="hero-title-centered"
+                    style={{ y }}
+                >
+                    <span className="line">
+                        <motion.span
+                            initial={{ y: "100%" }}
+                            animate={{ y: 0 }}
+                            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                        >
+                            Visual
+                        </motion.span>
+                    </span>
+                    <span className="line">
+                        <motion.span
+                            initial={{ y: "100%" }}
+                            animate={{ y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                            className="pb-2"
+                        >
+                            Storytelling
+                        </motion.span>
+                    </span>
+                    <span className="line">
+                        <motion.span
+                            initial={{ y: "100%" }}
+                            animate={{ y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                        >
+                            For <span className="highlight-text">Visionaries.</span>
+                        </motion.span>
+                    </span>
+                </motion.h1>
 
-                    <motion.p
-                        className="hero-subtitle-scattered"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8, delay: 0.4 }}
-                    >
-                        More than visuals, we engineer high-impact CGI and cinematic storytelling that stops the scroll, elevates brand perception, and drives growth.
-                    </motion.p>
-                </div>
+                <motion.p
+                    className="hero-subtitle-centered"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.4 }}
+                >
+                    More than visuals, we engineer high-impact CGI and cinematic storytelling that stops the scroll, elevates brand perception, and drives growth.
+                </motion.p>
 
-                <div className="hero-right-zone">
-                    <motion.div
-                        className="hero-actions-stack"
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8, delay: 0.6 }}
-                    >
-                        <button className="btn-primary-glow pointer-auto">
-                            <span>Book a Call</span>
-                            <div className="glow-effect"></div>
-                        </button>
+                <motion.div
+                    className="hero-actions-row"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.6 }}
+                >
+                    <button className="btn-primary-glow pointer-auto">
+                        <span>Book a Call</span>
+                        <div className="glow-effect"></div>
+                    </button>
 
-                        <div className="pointer-auto" style={{ cursor: 'pointer' }}>
-                            <GlassSurface
-                                width={200}
-                                height={55}
-                                borderRadius={50}
-                                blur={5}
-                                opacity={0.5}
-                                backgroundOpacity={0.1}
-                                borderWidth={0.2}
-                                brightness={100}
-                                mixBlendMode="overlay"
-                            >
-                                <span style={{ fontWeight: 600, color: '#fff', fontSize: '1rem', letterSpacing: '0.02em' }}>View Our Work</span>
-                            </GlassSurface>
-                        </div>
-                    </motion.div>
+                    <div className="pointer-auto" style={{ cursor: 'pointer' }}>
+                        <GlassSurface
+                            width={200}
+                            height={55}
+                            borderRadius={50}
+                            blur={5}
+                            opacity={0.5}
+                            backgroundOpacity={0.1}
+                            borderWidth={0.2}
+                            brightness={100}
+                            mixBlendMode="overlay"
+                        >
+                            <span style={{ fontWeight: 600, color: '#fff', fontSize: '1rem', letterSpacing: '0.02em' }}>View Our Work</span>
+                        </GlassSurface>
+                    </div>
+                </motion.div>
 
-                    <motion.div
-                        className="hero-social-proof-scattered"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 1, delay: 0.8 }}
-                    >
-                        <div className="client-logos">
-                            <div className="client-avatar" style={{ backgroundImage: 'url(/video-thumb-1.jpg)' }}></div>
-                            <div className="client-avatar" style={{ backgroundImage: 'url(/video-thumb-2.jpg)' }}></div>
-                            <div className="client-avatar" style={{ backgroundImage: 'url(/video-thumb-3.jpg)' }}></div>
-                            <div className="client-avatar-more">+40</div>
-                        </div>
-                        <p className="trusted-label">Trusted by 50+ Creators</p>
-                    </motion.div>
-                </div>
+                <motion.div
+                    className="hero-social-proof-centered"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.8 }}
+                >
+                    <div className="client-logos">
+                        <div className="client-avatar" style={{ backgroundImage: 'url(/video-thumb-1.jpg)' }}></div>
+                        <div className="client-avatar" style={{ backgroundImage: 'url(/video-thumb-2.jpg)' }}></div>
+                        <div className="client-avatar" style={{ backgroundImage: 'url(/video-thumb-3.jpg)' }}></div>
+                        <div className="client-avatar-more">+40</div>
+                    </div>
+                    <p className="trusted-label">Trusted by 50+ Creators</p>
+                </motion.div>
             </div>
         </section>
     )

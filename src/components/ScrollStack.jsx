@@ -10,11 +10,11 @@ const CardWrapper = React.memo(({ children, index, total, scrollYProgress, posit
     // Optimization: Map scroll progress to a value once per frame
     const current = useTransform(scrollYProgress, [0, 1], [0, total]);
 
-    // Position: cards enter from bottom (100vh), hit center (0vh), and stack back (-10vh)
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
     const y = useTransform(
         current,
         [index - 1, index, index + 1],
-        ['100vh', '0vh', '-15vh']
+        ['100vh', '0vh', isMobile ? '-5vh' : '-15vh']
     );
 
     const scale = useTransform(
@@ -45,11 +45,11 @@ const CardWrapper = React.memo(({ children, index, total, scrollYProgress, posit
                 right: 0,
                 margin: '0 auto',
                 width: '100%',
-                maxWidth: '600px',
+                maxWidth: typeof window !== 'undefined' && window.innerWidth < 768 ? '90vw' : '600px',
                 y,
                 scale,
                 opacity,
-                filter: useTransform(blurValue, (v) => v === '0px' ? 'none' : `blur(${v})`),
+                filter: typeof window !== 'undefined' && window.innerWidth < 768 ? 'none' : useTransform(blurValue, (v) => v === '0px' ? 'none' : `blur(${v})`),
                 zIndex: index,
                 height: 'auto',
                 display: 'flex',
@@ -82,7 +82,7 @@ const ScrollStack = ({
             ref={containerRef}
             className={`scroll-stack-container ${className}`}
             style={{
-                height: `${total * 100}vh`, // 100vh per card for clear scrolling
+                height: typeof window !== 'undefined' && window.innerWidth < 768 ? `${total * 60}vh` : `${total * 100}vh`,
                 position: 'relative'
             }}
         >
