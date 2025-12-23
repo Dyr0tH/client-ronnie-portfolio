@@ -33,7 +33,7 @@ const LazyVideo = ({ src, style, forcedPause, ...props }) => {
     useEffect(() => {
         if (!isLoaded || !videoRef.current) return
 
-        if (forcedPause) {
+        if (forcedPause || !props.autoPlay) {
             videoRef.current.pause()
         } else if (props.autoPlay) {
             videoRef.current.play().catch(() => { /* Autoplay prevented */ })
@@ -202,32 +202,32 @@ const CGICard = ({ src, label, delay, isCenter = false }) => {
 
 const CGI_DATA = {
     basic: [
-        { id: 1, type: 'vertical', src: '/cgi/basic/1.mp4' },
-        { id: 2, type: 'horizontal', src: '/cgi/basic/2.mp4' },
-        { id: 3, type: 'vertical', src: '/cgi/basic/3.mp4' },
-        { id: 4, type: 'horizontal', src: '/cgi/basic/4.mp4' },
-        { id: 5, type: 'vertical', src: '/cgi/basic/5.mp4' },
-        { id: 6, type: 'vertical', src: '/cgi/basic/6.mp4' },
-        { id: 7, type: 'horizontal', src: '/cgi/basic/7.mp4' },
+        { id: 1, type: 'vertical', src: '/cgi/basic/1~1.mp4' },
+        { id: 2, type: 'horizontal', src: '/cgi/basic/2~1.mp4' },
+        { id: 3, type: 'vertical', src: '/cgi/basic/3~1.mp4' },
+        { id: 4, type: 'horizontal', src: '/cgi/basic/4~1.mp4' },
+        { id: 5, type: 'vertical', src: '/cgi/basic/5~1.mp4' },
+        { id: 6, type: 'vertical', src: '/cgi/basic/6~1.mp4' },
+        { id: 7, type: 'horizontal', src: '/cgi/basic/7~1.mp4' },
     ],
     intermediate: [
-        { id: 1, type: 'horizontal', src: '/cgi/intermediate/1.mp4' },
-        { id: 2, type: 'vertical', src: '/cgi/intermediate/2.mp4' },
-        { id: 3, type: 'horizontal', src: '/cgi/intermediate/3.mp4' },
-        { id: 4, type: 'vertical', src: '/cgi/intermediate/4.mp4' },
-        { id: 5, type: 'horizontal', src: '/cgi/intermediate/5.mp4' },
-        { id: 6, type: 'vertical', src: '/cgi/intermediate/6.mp4' },
-        { id: 7, type: 'horizontal', src: '/cgi/intermediate/7.mp4' },
+        { id: 1, type: 'horizontal', src: '/cgi/intermediate/1~1.mp4' },
+        { id: 2, type: 'vertical', src: '/cgi/intermediate/2~1.mp4' },
+        { id: 3, type: 'horizontal', src: '/cgi/intermediate/3~1.mp4' },
+        { id: 4, type: 'vertical', src: '/cgi/intermediate/4~1.mp4' },
+        { id: 5, type: 'horizontal', src: '/cgi/intermediate/5~1.mp4' },
+        { id: 6, type: 'vertical', src: '/cgi/intermediate/6~1.mp4' },
+        { id: 7, type: 'horizontal', src: '/cgi/intermediate/7~1.mp4' },
     ],
     advance: [
-        { id: 1, type: 'vertical', src: '/cgi/advance/1.mp4' },
-        { id: 2, type: 'vertical', src: '/cgi/advance/2.mp4' },
-        { id: 3, type: 'horizontal', src: '/cgi/advance/3.mp4' },
-        { id: 4, type: 'vertical', src: '/cgi/advance/4.mp4' },
-        { id: 5, type: 'horizontal', src: '/cgi/advance/5.mp4' },
-        { id: 6, type: 'vertical', src: '/cgi/advance/6.mp4' },
-        { id: 7, type: 'horizontal', src: '/cgi/advance/7 advance .mp4' },
-        { id: 8, type: 'vertical', src: '/cgi/advance/lens intro.mp4' },
+        { id: 1, type: 'vertical', src: '/cgi/advance/1~1.mp4' },
+        { id: 2, type: 'vertical', src: '/cgi/advance/2~1.mp4' },
+        { id: 3, type: 'horizontal', src: '/cgi/advance/3~1.mp4' },
+        { id: 4, type: 'vertical', src: '/cgi/advance/4~1.mp4' },
+        { id: 5, type: 'horizontal', src: '/cgi/advance/5~1.mp4' },
+        { id: 6, type: 'vertical', src: '/cgi/advance/6~1.mp4' },
+        { id: 7, type: 'horizontal', src: '/cgi/advance/7 advance ~1.mp4' },
+        { id: 8, type: 'vertical', src: '/cgi/advance/lens intro~1.mp4' },
     ]
 }
 
@@ -280,7 +280,7 @@ const TechCard = ({ item, isPaused }) => {
             <LazyVideo
                 src={item.src}
                 forcedPause={isPaused}
-                autoPlay
+                autoPlay={isHovered}
                 loop
                 muted
                 playsInline

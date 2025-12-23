@@ -2,8 +2,23 @@
   width: 100%;
   height: auto;
   position: relative;
-  /* Ensure 3D context is preserved if needed */
   transform-style: preserve-3d;
 }
 
-/* Optional: Add some default styling if needed, but most is handled by Testimonials.jsx */
+.scroll-stack-container {
+  overflow: visible;
+}
+
+.scroll-stack-card-wrapper {
+  pointer-events: none; /* Let clicks pass through if needed, though usually not for images */
+}
+
+.scroll-stack-card-wrapper > * {
+  pointer-events: auto;
+}
+
+/* Ensure images load smoothly */
+.testimonial-image-card img {
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}

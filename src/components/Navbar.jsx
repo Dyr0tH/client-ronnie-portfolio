@@ -20,6 +20,13 @@ export default function Navbar() {
         { name: 'FAQ', href: '#faq' },
     ]
 
+    const handleNavClick = (e, href) => {
+        if (href.startsWith('#') && window.lenis) {
+            e.preventDefault()
+            window.lenis.scrollTo(href, { offset: -80 }) // Offset for navbar height
+        }
+    }
+
     return (
         <>
             <motion.nav
@@ -29,7 +36,11 @@ export default function Navbar() {
                 transition={{ duration: 0.5 }}
             >
                 <div className="nav-container">
-                    <a href="#" className="nav-logo-link" onClick={() => window.scrollTo(0, 0)}>
+                    <a href="#" className="nav-logo-link" onClick={(e) => {
+                        e.preventDefault()
+                        if (window.lenis) window.lenis.scrollTo(0)
+                        else window.scrollTo(0, 0)
+                    }}>
                         <div className="nav-logo">
                             <img src="/logo.png" alt="MetaCreation Studio" className="nav-logo-img" />
                             <span className="logo-text">MetaCreation<span className="logo-accent">Studio</span></span>
@@ -41,11 +52,23 @@ export default function Navbar() {
                         <ul className="nav-menu">
                             {navLinks.map((link) => (
                                 <li key={link.name}>
-                                    <a href={link.href} className="nav-link">{link.name}</a>
+                                    <a
+                                        href={link.href}
+                                        className="nav-link"
+                                        onClick={(e) => handleNavClick(e, link.href)}
+                                    >
+                                        {link.name}
+                                    </a>
                                 </li>
                             ))}
                         </ul>
-                        <a href="#contact" className="btn-primary nav-cta">Contact Us</a>
+                        <a
+                            href="#contact"
+                            className="btn-primary nav-cta"
+                            onClick={(e) => handleNavClick(e, '#contact')}
+                        >
+                            Contact Us
+                        </a>
                     </div>
 
                     {/* Mobile Toggle */}
@@ -78,7 +101,10 @@ export default function Navbar() {
                                 <li key={link.name}>
                                     <a
                                         href={link.href}
-                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        onClick={(e) => {
+                                            setIsMobileMenuOpen(false)
+                                            handleNavClick(e, link.href)
+                                        }}
                                     >
                                         {link.name}
                                     </a>
@@ -88,7 +114,10 @@ export default function Navbar() {
                                 <a
                                     href="#contact"
                                     className="btn-primary mobile-cta"
-                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    onClick={(e) => {
+                                        setIsMobileMenuOpen(false)
+                                        handleNavClick(e, '#contact')
+                                    }}
                                 >
                                     Contact Us
                                 </a>

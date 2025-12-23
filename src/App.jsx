@@ -12,12 +12,40 @@ import Footer from './components/Footer'
 import Loader from './components/Loader'
 import Work, { PopupVideoPlayer } from './components/Work'
 
+import Lenis from 'lenis'
+
 function App() {
   const [isLoading, setIsLoading] = useState(true)
   const [progress, setProgress] = useState(0)
   const [selectedVideo, setSelectedVideo] = useState(null)
 
   useEffect(() => {
+    // Initialize Lenis smooth scroll
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // https://www.desmos.com/calculator/brs54l4ba6
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      smoothTouch: false,
+      touchMultiplier: 2,
+      infinite: false,
+    })
+
+    // Add lenis class to html for CSS targeting
+    document.documentElement.classList.add('lenis')
+
+    function raf(time) {
+      lenis.raf(time)
+      requestAnimationFrame(raf)
+    }
+
+    requestAnimationFrame(raf)
+
+    // Log to window for easier debugging if needed
+    window.lenis = lenis
+
     // Simulate initial progress
     const timer = setInterval(() => {
       setProgress(prev => {
@@ -45,6 +73,7 @@ function App() {
     const failSafe = setTimeout(handleLoad, 6000)
 
     return () => {
+      lenis.destroy()
       clearInterval(timer)
       clearTimeout(failSafe)
       window.removeEventListener('load', handleLoad)
