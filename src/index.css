@@ -725,16 +725,43 @@ section {
   align-items: center;
   justify-content: center;
   transition: all var(--transition-fast);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+}
+
+.carousel-btn.prev-btn {
+  left: 20px;
+}
+
+.carousel-btn.next-btn {
+  right: 20px;
 }
 
 .carousel-btn:hover {
   background: #ff8555;
-  transform: scale(1.1);
+  transform: translateY(-50%) scale(1.1);
 }
 
 .carousel-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .carousel-btn {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .carousel-btn.prev-btn {
+    left: 10px;
+  }
+  
+  .carousel-btn.next-btn {
+    right: 10px;
+  }
 }
 
 .explore-more {

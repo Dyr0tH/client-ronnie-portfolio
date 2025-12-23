@@ -279,7 +279,7 @@ const TechCard = ({ item, isPaused }) => {
             {/* Video Content */}
             <LazyVideo
                 src={item.src}
-                forcedPause={isPaused}
+                forcedPause={isPaused || (typeof window !== 'undefined' && window.innerWidth < 768 && !isHovered)}
                 autoPlay={isHovered}
                 loop
                 muted
@@ -502,7 +502,7 @@ export default function Work({ selectedVideo, onVideoSelect }) {
                 <h2 className="section-title">Explore our video editing<br />work and projects</h2>
 
                 <div className="video-carousel" style={{ perspective: '1000px', height: '600px' }}>
-                    <button className="carousel-btn prev-btn" onClick={goToPrev} style={{ zIndex: 20 }}>
+                    <button className="carousel-btn prev-btn" onClick={goToPrev}>
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
@@ -544,8 +544,8 @@ export default function Work({ selectedVideo, onVideoSelect }) {
                                 >
                                     <LazyVideo
                                         src={video.src}
-                                        forcedPause={!!selectedVideo}
-                                        autoPlay
+                                        forcedPause={!!selectedVideo || !isCenter}
+                                        autoPlay={isCenter}
                                         muted={isCenter ? isCenterMuted : true}
                                         loop
                                         playsInline
@@ -563,7 +563,7 @@ export default function Work({ selectedVideo, onVideoSelect }) {
                         })}
                     </div>
 
-                    <button className="carousel-btn next-btn" onClick={goToNext} style={{ zIndex: 20 }}>
+                    <button className="carousel-btn next-btn" onClick={goToNext}>
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
