@@ -82,7 +82,10 @@ const ScrollStack = ({
             ref={containerRef}
             className={`scroll-stack-container ${className}`}
             style={{
-                height: typeof window !== 'undefined' && window.innerWidth < 768 ? `${total * 60}vh` : `${total * 100}vh`,
+                // Significantly increase scroll height (150vh per card) to ensure stickiness lasts
+                height: typeof window !== 'undefined' && window.innerWidth < 768
+                    ? `calc(${total * 80}vh + 100vh)`
+                    : `calc(${total * 150}vh + 100vh)`,
                 position: 'relative'
             }}
         >
@@ -94,7 +97,7 @@ const ScrollStack = ({
                     height: '100vh',
                     overflow: 'hidden',
                     display: 'flex',
-                    alignItems: 'flex-start',
+                    alignItems: 'center', // Changed to center for better focus
                     justifyContent: 'center'
                 }}
             >

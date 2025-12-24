@@ -107,99 +107,6 @@ const HorizontalVideo = ({ src, className, style, isPaused }) => {
     )
 }
 
-const CGICard = ({ src, label, delay, isCenter = false }) => {
-    const [isHovered, setIsHovered] = useState(false)
-
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay, duration: 0.6 }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            style={{
-                position: 'relative',
-                width: isCenter ? '340px' : '300px',
-                height: isCenter ? '600px' : '530px',
-                background: '#050505',
-                cursor: 'pointer',
-                borderRadius: '4px'
-            }}
-            animate={{
-                scale: isHovered ? 1.02 : 1,
-                filter: isHovered ? 'drop-shadow(0 0 20px rgba(47, 204, 239, 0.3))' : 'drop-shadow(0 0 0 rgba(0,0,0,0))',
-                transition: { duration: 0.2 }
-            }}
-        >
-            {/* Tech Border */}
-            <div style={{
-                position: 'absolute',
-                inset: '2px',
-                border: '1px solid rgba(47, 204, 239, 0.3)',
-                zIndex: 2,
-                pointerEvents: 'none'
-            }} />
-
-            {/* Corner Accents */}
-            <div style={{ position: 'absolute', top: 0, left: 0, width: '20px', height: '20px', borderTop: '2px solid #2fccef', borderLeft: '2px solid #2fccef', zIndex: 3 }} />
-            <div style={{ position: 'absolute', top: 0, right: 0, width: '20px', height: '20px', borderTop: '2px solid #2fccef', borderRight: '2px solid #2fccef', zIndex: 3 }} />
-            <div style={{ position: 'absolute', bottom: 0, left: 0, width: '20px', height: '20px', borderBottom: '2px solid #2fccef', borderLeft: '2px solid #2fccef', zIndex: 3 }} />
-            <div style={{ position: 'absolute', bottom: 0, right: 0, width: '20px', height: '20px', borderBottom: '2px solid #2fccef', borderRight: '2px solid #2fccef', zIndex: 3 }} />
-
-            {/* Video */}
-            <video
-                src={src}
-                autoPlay
-                loop
-                muted={!isHovered}
-                playsInline
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    opacity: 0.9
-                }}
-            />
-
-            {/* Scanline Overlay */}
-            {/* <div style={{
-                position: 'absolute',
-                inset: 0,
-                background: 'linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.5) 50%)',
-                backgroundSize: '100% 4px',
-                pointerEvents: 'none',
-                opacity: 0.2,
-                zIndex: 1
-            }} /> */}
-
-            {/* Label */}
-            <div style={{
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                padding: '20px',
-                background: 'linear-gradient(to top, #000, transparent)',
-                color: '#fff',
-                textAlign: 'left',
-                zIndex: 4
-            }}>
-                <div style={{
-                    fontSize: isCenter ? '1.5rem' : '1.2rem',
-                    letterSpacing: '0.05em',
-                    textTransform: 'uppercase',
-                    fontFamily: 'var(--font-primary)',
-                    fontWeight: 500,
-                    textShadow: '0 0 10px rgba(0,0,0,0.5)'
-                }}>
-                    {label}
-                </div>
-            </div>
-        </motion.div>
-    )
-}
-
 const CGI_DATA = {
     basic: [
         { id: 1, type: 'vertical', src: '/cgi/basic/1~1.mp4' },
@@ -233,96 +140,76 @@ const CGI_DATA = {
 
 
 
-const TechCard = ({ item, isPaused }) => {
-    const [isHovered, setIsHovered] = useState(false)
-    const isVertical = item.type === 'vertical'
-
-    return (
-        <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4 }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            style={{
-                position: 'relative',
-                flexShrink: 0,
-                width: isVertical ? '300px' : '500px',
-                height: '450px',
-                background: '#050505',
-                cursor: 'pointer',
-                borderRadius: '4px',
-                marginRight: '20px',
-                overflow: 'hidden'
-            }}
-            whileHover={{
-                scale: 1.02,
-                filter: 'drop-shadow(0 0 20px rgba(47, 204, 239, 0.3))',
-                transition: { duration: 0.2 }
-            }}
-        >
-            {/* Tech Border */}
-            <div style={{
-                position: 'absolute',
-                inset: '2px',
-                border: '1px solid rgba(47, 204, 239, 0.3)',
-                zIndex: 2,
-                pointerEvents: 'none'
-            }} />
-
-            {/* Corner Accents - All 4 Corners */}
-            <div style={{ position: 'absolute', top: 0, left: 0, width: '20px', height: '20px', borderTop: '2px solid #2fccef', borderLeft: '2px solid #2fccef', zIndex: 3 }} />
-            <div style={{ position: 'absolute', top: 0, right: 0, width: '20px', height: '20px', borderTop: '2px solid #2fccef', borderRight: '2px solid #2fccef', zIndex: 3 }} />
-            <div style={{ position: 'absolute', bottom: 0, left: 0, width: '20px', height: '20px', borderBottom: '2px solid #2fccef', borderLeft: '2px solid #2fccef', zIndex: 3 }} />
-            <div style={{ position: 'absolute', bottom: 0, right: 0, width: '20px', height: '20px', borderBottom: '2px solid #2fccef', borderRight: '2px solid #2fccef', zIndex: 3 }} />
-
-            {/* Video Content */}
-            <LazyVideo
-                src={item.src}
-                forcedPause={isPaused || (typeof window !== 'undefined' && window.innerWidth < 768 && !isHovered)}
-                autoPlay={isHovered}
-                loop
-                muted
-                playsInline
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    opacity: 0.9
-                }}
-            />
-
-            {/* Scanline Overlay */}
-            {/* <div style={{
-                position: 'absolute',
-                inset: 0,
-                background: 'linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.5) 50%)',
-                backgroundSize: '100% 4px',
-                pointerEvents: 'none',
-                opacity: 0.2,
-                zIndex: 1
-            }} /> */}
-        </motion.div>
-    )
-}
-
 const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
     const [activeTab, setActiveTab] = useState('basic')
+    const [activeIndex, setActiveIndex] = useState(0)
+    const [isTransitioning, setIsTransitioning] = useState(false)
+    const [isCenterMuted, setIsCenterMuted] = useState(true)
+    const pauseTimeoutRef = useRef(null)
 
-    // Reduce duplicates on mobile: 2x instead of 3x to save memory
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
-    const items = isMobile
-        ? [...CGI_DATA[activeTab], ...CGI_DATA[activeTab]]
-        : [...CGI_DATA[activeTab], ...CGI_DATA[activeTab], ...CGI_DATA[activeTab]]
+    const items = CGI_DATA[activeTab]
+
+    const goToNext = useCallback(() => {
+        if (isTransitioning) return
+        setIsTransitioning(true)
+        setActiveIndex((prev) => (prev + 1) % items.length)
+        setTimeout(() => setIsTransitioning(false), 500)
+    }, [isTransitioning, items.length])
+
+    const goToPrev = () => {
+        if (isTransitioning) return
+        setIsTransitioning(true)
+        setActiveIndex((prev) => (prev - 1 + items.length) % items.length)
+        setTimeout(() => setIsTransitioning(false), 500)
+    }
+
+    useEffect(() => {
+        setActiveIndex(0)
+    }, [activeTab])
+
+    useEffect(() => {
+        if (selectedVideo) {
+            if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current)
+            return
+        }
+        if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current)
+        pauseTimeoutRef.current = setTimeout(goToNext, 3000)
+        return () => clearTimeout(pauseTimeoutRef.current)
+    }, [activeIndex, goToNext, selectedVideo])
+
+    const getCardStyle = (index) => {
+        let diff = (index - activeIndex + items.length) % items.length
+        if (diff > items.length / 2) diff -= items.length
+
+        const isActive = diff === 0
+        const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+        const offsetMultiplier = isMobile ? 140 : 260
+        const xOffset = diff * offsetMultiplier
+        const scale = isActive ? (isMobile ? 1.05 : 1.1) : 0.75
+        const opacity = isActive ? 1 : 0.4
+        const rotateY = diff === 0 ? 0 : diff > 0 ? -20 : 20
+        const zIndex = isActive ? 10 : 10 - Math.abs(diff)
+
+        return {
+            x: xOffset,
+            scale,
+            opacity,
+            rotateY,
+            zIndex,
+            filter: isActive ? 'none' : 'blur(2px) brightness(0.4)'
+        }
+    }
 
     return (
         <div className="cgi-gallery" style={{ width: '100%', position: 'relative' }}>
-            {/* Tabs */}
             <div className="cgi-tabs-container">
                 {Object.keys(CGI_DATA).map(tab => (
                     <button
                         key={tab}
-                        onClick={() => setActiveTab(tab)}
+                        onClick={() => {
+                            setActiveTab(tab)
+                            setActiveIndex(0)
+                        }}
                         className={`cgi-tab-btn ${activeTab === tab ? 'active' : ''}`}
                     >
                         {tab}
@@ -330,45 +217,114 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
                 ))}
             </div>
 
-            {/* Marquee Gallery - CSS Animation for Pause on Hover */}
-            {/* Optimization: Hide marquee when popup is open to save resources */}
-            <div
-                className="marquee-container"
-                style={{
-                    display: selectedVideo ? 'none' : 'flex',
+            <div className="cgi-carousel-wrapper" style={{
+                perspective: '1200px',
+                height: typeof window !== 'undefined' && window.innerWidth < 768 ? '450px' : '650px',
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                overflow: 'hidden',
+                width: '100%'
+            }}>
+                {/* Navigation Buttons */}
+                <button className="carousel-btn prev-btn" onClick={goToPrev} style={{ zIndex: 21 }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                </button>
+
+                <div className="carousel-track" style={{
+                    position: 'relative',
                     width: '100%',
-                    overflow: 'hidden',
-                    maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'
-                }}
-            >
-                <div
-                    className="marquee-track"
-                    style={{
-                        display: 'flex',
-                        padding: '20px 0',
-                        width: 'max-content',
-                        animation: 'marquee 40s linear infinite'
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.animationPlayState = 'paused'}
-                    onMouseLeave={(e) => e.currentTarget.style.animationPlayState = 'running'}
-                >
-                    {items.map((item, index) => (
-                        <div key={`${activeTab}-${item.id}-${index}`} onClick={() => onVideoSelect(item)}>
-                            <TechCard item={item} isPaused={!!selectedVideo} />
-                        </div>
-                    ))}
+                    height: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}>
+                    {items.map((item, index) => {
+                        const style = getCardStyle(index)
+                        const isCenter = index === activeIndex
+                        return (
+                            <motion.div
+                                key={`${activeTab}-${item.id}-${index}`}
+                                onClick={() => isCenter && onVideoSelect(item)}
+                                initial={false}
+                                animate={style}
+                                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                                style={{
+                                    position: 'absolute',
+                                    transformStyle: 'preserve-3d',
+                                    width: typeof window !== 'undefined' && window.innerWidth < 768 ? '220px' : '400px',
+                                    height: typeof window !== 'undefined' && window.innerWidth < 768 ? '350px' : '550px',
+                                    cursor: isCenter ? 'pointer' : 'default',
+                                    borderRadius: '12px',
+                                    overflow: 'hidden',
+                                    border: isCenter ? '1px solid #2fccef' : '1px solid rgba(255,255,255,0.1)',
+                                    boxShadow: isCenter ? '0 20px 50px rgba(47, 204, 239, 0.2)' : 'none'
+                                }}
+                            >
+                                <LazyVideo
+                                    src={item.src}
+                                    forcedPause={!!selectedVideo || !isCenter}
+                                    autoPlay={isCenter}
+                                    muted={isCenter ? isCenterMuted : true}
+                                    loop
+                                    playsInline
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover'
+                                    }}
+                                />
+
+                                {isCenter && (
+                                    <div style={{
+                                        position: 'absolute',
+                                        bottom: 0,
+                                        left: 0,
+                                        right: 0,
+                                        padding: '20px',
+                                        background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)',
+                                        color: '#fff',
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center'
+                                    }}>
+                                        <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>View Project</span>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setIsCenterMuted(!isCenterMuted);
+                                            }}
+                                            style={{
+                                                background: 'rgba(255,255,255,0.1)',
+                                                border: 'none',
+                                                borderRadius: '50%',
+                                                width: '32px',
+                                                height: '32px',
+                                                cursor: 'pointer',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                color: '#fff'
+                                            }}
+                                        >
+                                            {isCenterMuted ? '🔇' : '🔊'}
+                                        </button>
+                                    </div>
+                                )}
+                            </motion.div>
+                        )
+                    })}
                 </div>
+
+                <button className="carousel-btn next-btn" onClick={goToNext} style={{ zIndex: 21 }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                </button>
             </div>
-
-            {/* Global Styles for Marquee */}
-            <style>{`
-                @keyframes marquee {
-                    from { transform: translateX(0); }
-                    to { transform: translateX(-33.33%); }
-                }
-            `}</style>
-
-            {/* Video Popup Modal moved to parent Work component for better control */}
         </div>
     )
 }

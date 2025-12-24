@@ -39,50 +39,40 @@ export default function Testimonials() {
                 <h2 className="section-title">What our premium clients<br />are saying about us</h2>
 
                 <div className="testimonials-wrapper">
-                    {!isMobile ? (
-                        <ScrollStack
-                            useWindowScroll={true}
-                            itemDistance={50}
-                            stackPosition="20%"
-                            scaleEndPosition="5%"
+                    <div className="testimonials-slider-unified">
+                        <Swiper
+                            modules={[Pagination, Autoplay]}
+                            spaceBetween={30}
+                            slidesPerView={1.2}
+                            centeredSlides={true}
+                            loop={true}
+                            breakpoints={{
+                                768: {
+                                    slidesPerView: 2,
+                                    centeredSlides: false
+                                },
+                                1024: {
+                                    slidesPerView: 3,
+                                    centeredSlides: false
+                                }
+                            }}
+                            pagination={{ clickable: true }}
+                            autoplay={{ delay: 3000, disableOnInteraction: false }}
+                            className="testimonial-swiper"
                         >
                             {testimonials.map((item) => (
-                                <ScrollStackItem key={item.id}>
-                                    <div className="testimonial-card-desktop">
+                                <SwiperSlide key={item.id}>
+                                    <div className="testimonial-card-unified">
                                         <img
                                             src={item.image}
                                             alt="Client Testimonial"
-                                            className="testimonial-image"
+                                            className="testimonial-image-unified"
                                         />
                                     </div>
-                                </ScrollStackItem>
+                                </SwiperSlide>
                             ))}
-                        </ScrollStack>
-                    ) : (
-                        <div className="testimonials-mobile-slider">
-                            <Swiper
-                                modules={[Pagination, Autoplay]}
-                                spaceBetween={20}
-                                slidesPerView={1.1}
-                                centeredSlides={true}
-                                pagination={{ clickable: true }}
-                                autoplay={{ delay: 3000, disableOnInteraction: false }}
-                                className="testimonial-swiper"
-                            >
-                                {testimonials.map((item) => (
-                                    <SwiperSlide key={item.id}>
-                                        <div className="testimonial-card-mobile">
-                                            <img
-                                                src={item.image}
-                                                alt="Client Testimonial"
-                                                className="testimonial-image-mobile"
-                                            />
-                                        </div>
-                                    </SwiperSlide>
-                                ))}
-                            </Swiper>
-                        </div>
-                    )}
+                        </Swiper>
+                    </div>
                 </div>
             </div>
         </section>
