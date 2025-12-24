@@ -173,7 +173,7 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
             return
         }
         if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current)
-        pauseTimeoutRef.current = setTimeout(goToNext, 3000)
+        pauseTimeoutRef.current = setTimeout(goToNext, 5000)
         return () => clearTimeout(pauseTimeoutRef.current)
     }, [activeIndex, goToNext, selectedVideo])
 
@@ -420,7 +420,7 @@ export default function Work({ selectedVideo, onVideoSelect }) {
             return
         }
         if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current)
-        pauseTimeoutRef.current = setTimeout(goToNext, 2000)
+        pauseTimeoutRef.current = setTimeout(goToNext, 5000)
         return () => clearTimeout(pauseTimeoutRef.current)
     }, [activeIndex, goToNext, selectedVideo])
 
