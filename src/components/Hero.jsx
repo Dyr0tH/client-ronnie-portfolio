@@ -101,12 +101,19 @@ export default function Hero() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.6 }}
                 >
-                    <button className="btn-primary-glow pointer-auto">
+                    <button
+                        className="btn-primary-glow pointer-auto"
+                        onClick={() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })}
+                    >
                         <span>Book a Call</span>
                         <div className="glow-effect"></div>
                     </button>
 
-                    <div className="pointer-auto" style={{ cursor: 'pointer' }}>
+                    <div
+                        className="pointer-auto"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })}
+                    >
                         <GlassSurface
                             width={200}
                             height={55}

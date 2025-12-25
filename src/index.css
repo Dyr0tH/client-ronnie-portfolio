@@ -56,6 +56,11 @@ html.lenis body {
   overscroll-behavior: contain;
 }
 
+.lenis.lenis-smooth .navbar {
+  position: fixed !important;
+  transform: none !important;
+}
+
 .lenis.lenis-stopped {
   overflow: hidden;
 }
@@ -89,21 +94,76 @@ h1, h2, h3, h4, h5, h6 {
 /* Navbar */
 /* Responsive Navbar */
 .navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  padding: var(--spacing-md) 0;
-  transition: all 0.3s ease;
+  position: fixed !important; /* Force fixed positioning */
+  top: 20px;
+  left: 15px;
+  right: 15px;
+  margin: 0 auto;
+  width: auto;
+  max-width: 1300px;
+  z-index: 9999; /* Boost z-index to stay above everything */
+  padding: var(--spacing-sm) 0;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(10, 14, 18, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 0 15px rgba(47, 204, 239, 0.05);
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    padding: 10px 0;
+  }
 }
 
 .navbar.scrolled {
-  background: rgba(10, 14, 18, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  padding: var(--spacing-sm) 0;
+  top: 10px;
+  background: rgba(10, 14, 18, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Border Beam / Moving Glare Effect */
+.navbar::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  padding: 1px;
+  border-radius: 100px;
+  background: conic-gradient(
+    from var(--beam-angle, 0deg),
+    transparent 0deg,
+    transparent 60deg,
+    var(--color-primary) 110deg,
+    transparent 160deg
+  );
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: -1;
+  animation: beam-rotate 4s linear infinite;
+}
+
+@property --beam-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes beam-rotate {
+  from { --beam-angle: 0deg; }
+  to { --beam-angle: 360deg; }
 }
 
 .nav-container {
@@ -163,19 +223,31 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .nav-link {
-  color: var(--color-text-secondary);
+  color: #fff;
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.3s;
+  font-size: 0.95rem;
+  transition: all 0.3s;
+  opacity: 0.7;
 }
 
 .nav-link:hover {
-  color: #fff;
+  opacity: 1;
+  color: var(--color-primary);
 }
 
 .nav-cta {
-  padding: 0.6rem 1.5rem;
-  font-size: 0.9rem;
+  background: var(--color-primary);
+  color: #000 !important;
+  font-weight: 700;
+  border-radius: 50px;
+  padding: 0.7rem 1.8rem !important;
+  box-shadow: 0 0 20px rgba(47, 204, 239, 0.4);
+}
+
+.nav-cta:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 0 30px rgba(47, 204, 239, 0.6);
 }
 
 /* Mobile Toggle */
@@ -375,7 +447,7 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 10;
   text-align: center;
   max-width: 1000px;
-  padding: 0 var(--spacing-lg);
+  padding: 80px var(--spacing-lg) 0; /* Added top padding for floating nav */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -452,8 +524,15 @@ h1, h2, h3, h4, h5, h6 {
 
   .hero-title-centered {
     font-size: 3rem;
+    font-weight: 100;
+    line-height: 1.0;
+    letter-spacing: 0.05em;
   }
   
+  .hero-content-centered {
+    padding-top: 40px; /* More space for the capsule nav on mobile */
+  }
+
   .hero-subtitle-centered {
     font-size: 1rem;
     padding: 0 var(--spacing-md);
@@ -732,11 +811,11 @@ section {
 }
 
 .carousel-btn.prev-btn {
-  left: 30px;
+  left: 50px;
 }
 
 .carousel-btn.next-btn {
-  right: 30px;
+  right: 50px;
 }
 
 .carousel-btn:hover {
@@ -757,11 +836,11 @@ section {
   }
   
   .carousel-btn.prev-btn {
-    left: 1px;
+    left: 20px;
   }
   
   .carousel-btn.next-btn {
-    right: 1px;
+    right: 20px;
   }
 }
 
@@ -1886,9 +1965,7 @@ section {
   }
 
   /* Ensure hero is unaffected as per user request */
-  .hero-cinematic .section-title,
-  .hero-cinematic h1,
-  .hero-cinematic h2 {
+  .hero-cinematic .section-title {
     font-size: inherit !important;
   }
 }

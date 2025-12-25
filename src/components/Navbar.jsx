@@ -29,11 +29,13 @@ export default function Navbar() {
 
     return (
         <>
-            <motion.nav
+            <nav
                 className={`navbar ${isScrolled ? 'scrolled' : ''}`}
-                initial={{ y: -100 }}
-                animate={{ y: 0 }}
-                transition={{ duration: 0.5 }}
+                style={{
+                    position: 'fixed',
+                    willChange: 'transform',
+                    transform: 'translate3d(0, 0, 0)'
+                }}
             >
                 <div className="nav-container">
                     <a href="#" className="nav-logo-link" onClick={(e) => {
@@ -84,7 +86,7 @@ export default function Navbar() {
                         </div>
                     </button>
                 </div>
-            </motion.nav>
+            </nav>
 
             {/* Mobile Menu Overlay */}
             <AnimatePresence>

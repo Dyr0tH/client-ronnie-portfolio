@@ -123,13 +123,15 @@ function App() {
           />
         ) : (
           <>
+            {/* Navbar - Outside scroll container to stay fixed */}
+            <Navbar />
+
             <motion.div
               key="content"
               initial={{ opacity: 0, scale: 1.05, filter: 'blur(10px)' }}
               animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             >
-              <Navbar />
               <Hero />
               <TechStrip />
               <Work selectedVideo={selectedVideo} onVideoSelect={setSelectedVideo} />
