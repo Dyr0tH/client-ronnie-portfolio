@@ -52,7 +52,7 @@ export default function Footer() {
                                 background: 'rgba(0,0,0,0.6)',
                                 backdropFilter: 'blur(8px)',
                                 WebkitBackdropFilter: 'blur(8px)',
-                                zIndex: 9998
+                                zIndex: 99998
                             }}
                         />
                         <motion.div
@@ -72,7 +72,7 @@ export default function Footer() {
                                 border: '1px solid rgba(255,255,255,0.1)',
                                 borderRadius: '24px',
                                 padding: '2.5rem',
-                                zIndex: 9999,
+                                zIndex: 99999,
                                 overflowY: 'auto',
                                 color: '#fff',
                                 boxShadow: '0 40px 80px -20px rgba(0, 0, 0, 0.8)'

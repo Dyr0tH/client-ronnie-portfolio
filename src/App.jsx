@@ -139,8 +139,10 @@ function App() {
               <Testimonials />
               <Contact />
               <FAQ />
-              <Footer />
             </motion.div>
+
+            {/* Footer - Outside scroll container for modal z-index */}
+            <Footer />
 
             {/* Global Video Popup Modal - Outside the transform container */}
             <AnimatePresence>
