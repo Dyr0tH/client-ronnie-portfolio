@@ -56,18 +56,93 @@ const LazyVideo = ({ src, style, forcedPause, ...props }) => {
 
 const HorizontalVideo = ({ src, className, style, isPaused }) => {
     const [isMuted, setIsMuted] = useState(true)
+    const [isPlaying, setIsPlaying] = useState(false)
+    const videoRef = useRef(null)
+
+    const togglePlayPause = (e) => {
+        e.stopPropagation()
+        if (videoRef.current) {
+            if (isPlaying) {
+                videoRef.current.pause()
+            } else {
+                videoRef.current.play().catch(() => { /* Playback prevented */ })
+            }
+            setIsPlaying(!isPlaying)
+        }
+    }
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    // Video is in view, load it
+                    if (videoRef.current && !videoRef.current.src) {
+                        videoRef.current.src = src
+                    }
+                    observer.disconnect()
+                }
+            },
+            { rootMargin: '200px' }
+        )
+
+        if (videoRef.current) {
+            observer.observe(videoRef.current)
+        }
+
+        return () => observer.disconnect()
+    }, [src])
+
+    useEffect(() => {
+        if (!videoRef.current) return
+
+        if (isPaused || !isPlaying) {
+            videoRef.current.pause()
+        }
+    }, [isPlaying, isPaused])
 
     return (
         <div className={className} style={{ ...style, position: 'relative' }}>
-            <LazyVideo
-                src={src}
-                forcedPause={isPaused}
-                autoPlay
+            <video
+                ref={videoRef}
                 muted={isMuted}
                 loop
                 playsInline
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
+
+            {/* Play/Pause Button */}
+            <button
+                onClick={togglePlayPause}
+                style={{
+                    position: 'absolute',
+                    bottom: '15px',
+                    right: '60px',
+                    background: 'rgba(0,0,0,0.6)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '50%',
+                    width: '36px',
+                    height: '36px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    color: 'white',
+                    zIndex: 10
+                }}
+            >
+                {isPlaying ? (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="6" y="4" width="4" height="16" />
+                        <rect x="14" y="4" width="4" height="16" />
+                    </svg>
+                ) : (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polygon points="5 3 19 12 5 21 5 3" fill="currentColor" />
+                    </svg>
+                )}
+            </button>
+
+            {/* Mute/Unmute Button */}
             <button
                 onClick={(e) => {
                     e.stopPropagation()
@@ -217,6 +292,17 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
                 ))}
             </div>
 
+            <p style={{
+                textAlign: 'center',
+                color: 'rgba(255, 255, 255, 0.6)',
+                fontSize: '1rem',
+                marginTop: '1rem',
+                marginBottom: '2rem',
+                fontStyle: 'italic'
+            }}>
+                Click the video to play
+            </p>
+
             <div className="cgi-carousel-wrapper" style={{
                 perspective: '1200px',
                 height: typeof window !== 'undefined' && window.innerWidth < 768 ? '450px' : '650px',
@@ -266,8 +352,8 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
                             >
                                 <LazyVideo
                                     src={item.src}
-                                    forcedPause={!!selectedVideo || !isCenter}
-                                    autoPlay={isCenter}
+                                    forcedPause={true}
+                                    autoPlay={false}
                                     muted={isCenter ? isCenterMuted : true}
                                     loop
                                     playsInline

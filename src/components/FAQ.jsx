@@ -56,7 +56,14 @@ export default function FAQ() {
                         <div className="cta-text">
                             <h3>Have a question? Let's discuss it now!</h3>
                         </div>
-                        <button className="btn-dark-pill">Book an appointment</button>
+                        <a
+                            href="https://calendly.com/metacreationstudio/30min"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn-dark-pill"
+                        >
+                            Book an appointment on Calendly
+                        </a>
                     </motion.div>
                 </div>
 

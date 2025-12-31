@@ -24,31 +24,25 @@ export default function Hero() {
             ref={containerRef}
             onMouseMove={handleMouseMove}
         >
-            {/* WebGL Gradient Background */}
+            {/* Video Background */}
             <div className="hero-gradient-bg">
-                {/* <GradientBlinds
-                    gradientColors={['#2fccef', '#2fccef', '#006eff']}
-                    angle={0}
-                    noise={0}
-                    blindCount={10}
-                    blindMinWidth={40}
-                    spotlightRadius={0.3}
-                    spotlightSoftness={1.5}
-                    spotlightOpacity={0.5}
-                    mouseDampening={0.5}
-                    distortAmount={23}
-                    shineDirection="right"
-                    mixBlendMode="normal"
-                    mirrorGradient={false}
-                /> */}
-                <Plasma
-                    color="#006eff"
-                    speed={0.6}
-                    direction="forward"
-                    scale={2}
-                    opacity={1}
-                    mouseInteractive={true}
-                />
+                <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        zIndex: 0
+                    }}
+                >
+                    <source src="/hero_BG.mp4" type="video/mp4" />
+                </video>
             </div>
 
             <div className="hero-content-centered">
@@ -91,6 +85,7 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.4 }}
+                    style={{ textShadow: '0 4px 10px rgba(0,0,0,0.4)' }}
                 >
                     More than visuals, we engineer high-impact CGI and cinematic storytelling that stops the scroll, elevates brand perception, and drives growth.
                 </motion.p>
@@ -103,9 +98,9 @@ export default function Hero() {
                 >
                     <button
                         className="btn-primary-glow pointer-auto"
-                        onClick={() => document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' })}
+                        onClick={() => window.location.href = 'tel:+919589500421'}
                     >
-                        <span>Book a Call</span>
+                        <span>Call Me</span>
                         <div className="glow-effect"></div>
                     </button>
 
