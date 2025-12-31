@@ -215,31 +215,37 @@ const CGI_DATA = {
 
 
 
+import GlassSurface from './GlassSurface'
+
 const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
     const [activeTab, setActiveTab] = useState('basic')
     const [activeIndex, setActiveIndex] = useState(0)
     const [isTransitioning, setIsTransitioning] = useState(false)
     const [isCenterMuted, setIsCenterMuted] = useState(true)
+    const [isExpanded, setIsExpanded] = useState(false)
     const pauseTimeoutRef = useRef(null)
 
-    const items = CGI_DATA[activeTab]
+    const allItems = CGI_DATA[activeTab]
+    const carouselItems = allItems.slice(0, 5)
+    const extraItems = allItems.slice(5)
 
     const goToNext = useCallback(() => {
-        if (isTransitioning) return
+        if (isTransitioning || carouselItems.length === 0) return
         setIsTransitioning(true)
-        setActiveIndex((prev) => (prev + 1) % items.length)
+        setActiveIndex((prev) => (prev + 1) % carouselItems.length)
         setTimeout(() => setIsTransitioning(false), 500)
-    }, [isTransitioning, items.length])
+    }, [isTransitioning, carouselItems.length])
 
     const goToPrev = () => {
-        if (isTransitioning) return
+        if (isTransitioning || carouselItems.length === 0) return
         setIsTransitioning(true)
-        setActiveIndex((prev) => (prev - 1 + items.length) % items.length)
+        setActiveIndex((prev) => (prev - 1 + carouselItems.length) % carouselItems.length)
         setTimeout(() => setIsTransitioning(false), 500)
     }
 
     useEffect(() => {
         setActiveIndex(0)
+        setIsExpanded(false) // Reset expansion on tab change
     }, [activeTab])
 
     useEffect(() => {
@@ -253,8 +259,8 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
     }, [activeIndex, goToNext, selectedVideo])
 
     const getCardStyle = (index) => {
-        let diff = (index - activeIndex + items.length) % items.length
-        if (diff > items.length / 2) diff -= items.length
+        let diff = (index - activeIndex + carouselItems.length) % carouselItems.length
+        if (diff > carouselItems.length / 2) diff -= carouselItems.length
 
         const isActive = diff === 0
         const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
@@ -328,7 +334,7 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
                     justifyContent: 'center',
                     alignItems: 'center'
                 }}>
-                    {items.map((item, index) => {
+                    {carouselItems.map((item, index) => {
                         const style = getCardStyle(index)
                         const isCenter = index === activeIndex
                         return (
@@ -410,6 +416,115 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
                         <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                 </button>
+            </div>
+
+            {/* View More Button & Expanded Grid */}
+            <div className="cgi-expansion-container" style={{ marginTop: '3rem', width: '100%' }}>
+                <AnimatePresence>
+                    {!isExpanded && extraItems.length > 0 && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            style={{ display: 'flex', justifyContent: 'center' }}
+                        >
+                            <div
+                                onClick={() => setIsExpanded(true)}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                <GlassSurface
+                                    width={240}
+                                    height={55}
+                                    borderRadius={50}
+                                    blur={10}
+                                    opacity={0.3}
+                                    backgroundOpacity={0.15}
+                                    borderWidth={0.5}
+                                    brightness={30}
+                                    mixBlendMode="screen"
+                                >
+                                    <div style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '12px',
+                                        color: '#fff',
+                                        fontWeight: 600,
+                                        fontSize: '0.9rem',
+                                        letterSpacing: '0.1em',
+                                        textTransform: 'uppercase'
+                                    }}>
+                                        <span>View All Videos</span>
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                            <path d="M7 13l5 5 5-5M7 6l5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    </div>
+                                </GlassSurface>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {isExpanded && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                            style={{ overflow: 'hidden' }}
+                        >
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                                gap: '2rem',
+                                padding: '0 2rem'
+                            }}>
+                                {extraItems.map((item) => (
+                                    <motion.div
+                                        key={`extra-${item.id}`}
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ duration: 0.5 }}
+                                        onClick={() => onVideoSelect(item)}
+                                        style={{
+                                            aspectRatio: item.type === 'vertical' ? '9/16' : '16/9',
+                                            borderRadius: '12px',
+                                            overflow: 'hidden',
+                                            border: '1px solid rgba(255,255,255,0.1)',
+                                            cursor: 'pointer',
+                                            position: 'relative',
+                                            boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
+                                        }}
+                                        whileHover={{ scale: 1.02, borderColor: '#2fccef' }}
+                                    >
+                                        <LazyVideo
+                                            src={item.src}
+                                            autoPlay={false}
+                                            muted={true}
+                                            loop
+                                            playsInline
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                                objectFit: 'cover'
+                                            }}
+                                        />
+                                        <div style={{
+                                            position: 'absolute',
+                                            inset: 0,
+                                            background: 'rgba(0,0,0,0.2)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            opacity: 0,
+                                            transition: 'opacity 0.3s'
+                                        }} className="hover-overlay">
+                                            <span style={{ background: 'rgba(47, 204, 239, 0.9)', color: '#000', padding: '8px 16px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600 }}>Play Project</span>
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </div>
     )
@@ -534,7 +649,7 @@ export default function Work({ selectedVideo, onVideoSelect }) {
     }
 
     return (
-        <section className="work-section" id="work">
+        <section className="work-section" id="work" style={{ paddingBottom: '0' }}>
             <div className="section-container">
                 <div className="section-label">
                     <span className="dot"></span>
@@ -681,14 +796,17 @@ export default function Work({ selectedVideo, onVideoSelect }) {
                     </motion.div>
                 </div>
 
-                <div className="cgi-section" style={{ marginTop: '8rem' }}>
+                <div className="cgi-section" style={{ marginTop: '8rem', marginBottom: 0 }}>
                     <div className="section-label" style={{ justifyContent: 'center', marginBottom: '1rem' }}>
                         <span className="dot"></span>
                         <span>CGI Showcase</span>
                     </div>
-                    <h3 className="section-title" style={{ fontSize: '2.5rem', marginBottom: '4rem', textAlign: 'center' }}>
-                        High-End CGI<br />Visualizations
-                    </h3>
+                    <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+                        <h2 className="section-title" style={{ marginBottom: '1rem' }}>Visual storytelling<br />taken to the next level</h2>
+                        <p style={{ color: 'var(--color-text-secondary)', maxWidth: '600px', margin: '0 auto' }}>
+                            We produce high-end CGI content that captivates and converts.
+                        </p>
+                    </div>
 
                     <CGIGallery
                         onVideoSelect={onVideoSelect}

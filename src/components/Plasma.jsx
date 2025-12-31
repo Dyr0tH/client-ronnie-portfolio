@@ -3,7 +3,16 @@ import { Renderer, Program, Mesh, Triangle } from 'ogl';
 import './Plasma.css';
 
 const hexToRgb = hex => {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  // Support #rgb, #rrggbb, and #rrggbbaa (stripping alpha)
+  let cleanHex = hex.replace('#', '');
+  if (cleanHex.length === 3) {
+    cleanHex = cleanHex.split('').map(c => c + c).join('');
+  }
+  if (cleanHex.length === 8) {
+    cleanHex = cleanHex.substring(0, 6);
+  }
+
+  const result = /^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(cleanHex);
   if (!result) return [1, 0.5, 0.2];
   return [parseInt(result[1], 16) / 255, parseInt(result[2], 16) / 255, parseInt(result[3], 16) / 255];
 };
@@ -172,8 +181,21 @@ export const Plasma = ({
     setSize();
 
     let raf = 0;
+    const isVisible = { current: true };
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible.current = entry.isIntersecting;
+      },
+      { threshold: 0 }
+    );
+    observer.observe(containerEl);
+
     const t0 = performance.now();
     const loop = t => {
+      if (!isVisible.current) {
+        raf = requestAnimationFrame(loop);
+        return;
+      }
       let timeValue = (t - t0) * 0.001;
       if (direction === 'pingpong') {
         const pingpongDuration = 10;
@@ -195,6 +217,7 @@ export const Plasma = ({
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
+      observer.disconnect();
       if (mouseInteractive && containerEl) {
         containerEl.removeEventListener('mousemove', handleMouseMove);
       }

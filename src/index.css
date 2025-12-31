@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Avigea';
-  src: url('/fonts/Avigea.woff2') format('woff2');
+  src: url('/fonts/Coolvetica.otf') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -88,7 +88,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-weight: 400;
   line-height: 1.2;
-  letter-spacing: 0.05em;
+  letter-spacing: 0;
 }
 
 /* Navbar */
@@ -456,14 +456,18 @@ h1, h2, h3, h4, h5, h6 {
 
 .hero-title-centered {
   font-size: clamp(3.5rem, 10vw, 6.5rem);
-  font-weight: 400;
+  font-weight: 700;
   line-height: 1.1;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.3rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   color: #fff;
-  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.hero-title-centered,
+.hero-title-centered * {
+  text-shadow: none !important;
 }
 
 .hero-title-centered .line {
@@ -473,8 +477,27 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .hero-title-centered .highlight-text {
-  color: var(--color-primary);
-  font-style: italic;
+  background: linear-gradient(
+    90deg,
+    #2fccef,
+    #006eff,
+    #2fccef
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent; /* This will be overridden by -webkit-text-fill-color */
+  animation: shine 3s linear infinite;
+  display: inline-block;
+  padding-right: 2rem;
+  margin-right: -0.15em;
+}
+
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
 }
 
 .hero-subtitle-centered {
@@ -700,7 +723,8 @@ section {
 
 .section-title {
   font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 800;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   line-height: 1.2;
   margin-bottom: var(--spacing-2xl);
 }
@@ -1012,7 +1036,7 @@ section {
   color: #fff;
   text-transform: uppercase;
   line-height: 1;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.01em;
   margin: 0;
   text-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
