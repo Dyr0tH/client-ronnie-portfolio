@@ -55,6 +55,7 @@ const LazyVideo = ({ src, style, forcedPause, ...props }) => {
     )
 }
 
+
 const HorizontalVideo = ({ src, className, style, isPaused }) => {
     const [isMuted, setIsMuted] = useState(true)
     const [isPlaying, setIsPlaying] = useState(false)
@@ -185,11 +186,11 @@ const HorizontalVideo = ({ src, className, style, isPaused }) => {
 }
 
 const CGI_DATA = [
-    { id: 1, type: 'vertical', src: '/cgi/FVID1.mp4' },
-    { id: 2, type: 'vertical', src: '/cgi/FVID2.mp4' },
-    { id: 3, type: 'vertical', src: '/cgi/FVID3.mp4' },
-    { id: 4, type: 'vertical', src: '/cgi/FVID4.mp4' },
-    { id: 5, type: 'vertical', src: '/cgi/FVID5.mp4' },
+    { id: 1, type: 'vertical', src: '/cgi/FINVID1.mp4' },
+    { id: 2, type: 'vertical', src: '/cgi/FINVID2.mp4' },
+    { id: 3, type: 'vertical', src: '/cgi/FINVID3.mp4' },
+    { id: 4, type: 'vertical', src: '/cgi/FINVID4.mp4' },
+    { id: 5, type: 'vertical', src: '/cgi/FINVID5.mp4' },
 ]
 
 import GlassSurface from './GlassSurface'
