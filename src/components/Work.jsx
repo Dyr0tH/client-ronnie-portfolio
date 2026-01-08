@@ -44,6 +44,7 @@ const LazyVideo = ({ src, style, forcedPause, ...props }) => {
         <video
             ref={videoRef}
             src={isLoaded ? src : undefined}
+            preload='metadata'
             style={{
                 ...style,
                 opacity: isLoaded ? (style?.opacity !== undefined ? style.opacity : 1) : 0,
@@ -105,6 +106,7 @@ const HorizontalVideo = ({ src, className, style, isPaused }) => {
             <video
                 ref={videoRef}
                 muted={isMuted}
+                preload='metadata'
                 loop
                 playsInline
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
@@ -182,52 +184,22 @@ const HorizontalVideo = ({ src, className, style, isPaused }) => {
     )
 }
 
-const CGI_DATA = {
-    basic: [
-        { id: 1, type: 'vertical', src: '/cgi/basic/1~1.mp4' },
-        { id: 2, type: 'horizontal', src: '/cgi/basic/2~1.mp4' },
-        { id: 3, type: 'vertical', src: '/cgi/basic/3~1.mp4' },
-        { id: 4, type: 'horizontal', src: '/cgi/basic/4~1.mp4' },
-        { id: 5, type: 'vertical', src: '/cgi/basic/5~1.mp4' },
-        { id: 6, type: 'vertical', src: '/cgi/basic/6~1.mp4' },
-        { id: 7, type: 'horizontal', src: '/cgi/basic/7~1.mp4' },
-    ],
-    intermediate: [
-        { id: 1, type: 'horizontal', src: '/cgi/intermediate/1~1.mp4' },
-        { id: 2, type: 'vertical', src: '/cgi/intermediate/2~1.mp4' },
-        { id: 3, type: 'horizontal', src: '/cgi/intermediate/3~1.mp4' },
-        { id: 4, type: 'vertical', src: '/cgi/intermediate/4~1.mp4' },
-        { id: 5, type: 'horizontal', src: '/cgi/intermediate/5~1.mp4' },
-        { id: 6, type: 'vertical', src: '/cgi/intermediate/6~1.mp4' },
-        { id: 7, type: 'horizontal', src: '/cgi/intermediate/7~1.mp4' },
-    ],
-    advance: [
-        { id: 1, type: 'vertical', src: '/cgi/advance/1~1.mp4' },
-        { id: 2, type: 'vertical', src: '/cgi/advance/2~1.mp4' },
-        { id: 3, type: 'horizontal', src: '/cgi/advance/3~1.mp4' },
-        { id: 4, type: 'vertical', src: '/cgi/advance/4~1.mp4' },
-        { id: 5, type: 'horizontal', src: '/cgi/advance/5~1.mp4' },
-        { id: 6, type: 'vertical', src: '/cgi/advance/6~1.mp4' },
-        { id: 7, type: 'horizontal', src: '/cgi/advance/7 advance ~1.mp4' },
-        { id: 8, type: 'vertical', src: '/cgi/advance/lens intro~1.mp4' },
-    ]
-}
-
-
+const CGI_DATA = [
+    { id: 1, type: 'vertical', src: '/cgi/FVID1.mp4' },
+    { id: 2, type: 'vertical', src: '/cgi/FVID2.mp4' },
+    { id: 3, type: 'vertical', src: '/cgi/FVID3.mp4' },
+    { id: 4, type: 'vertical', src: '/cgi/FVID4.mp4' },
+    { id: 5, type: 'vertical', src: '/cgi/FVID5.mp4' },
+]
 
 import GlassSurface from './GlassSurface'
 
 const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
-    const [activeTab, setActiveTab] = useState('basic')
     const [activeIndex, setActiveIndex] = useState(0)
     const [isTransitioning, setIsTransitioning] = useState(false)
-    const [isCenterMuted, setIsCenterMuted] = useState(true)
-    const [isExpanded, setIsExpanded] = useState(false)
     const pauseTimeoutRef = useRef(null)
 
-    const allItems = CGI_DATA[activeTab]
-    const carouselItems = allItems.slice(0, 5)
-    const extraItems = allItems.slice(5)
+    const carouselItems = CGI_DATA
 
     const goToNext = useCallback(() => {
         if (isTransitioning || carouselItems.length === 0) return
@@ -242,11 +214,6 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
         setActiveIndex((prev) => (prev - 1 + carouselItems.length) % carouselItems.length)
         setTimeout(() => setIsTransitioning(false), 500)
     }
-
-    useEffect(() => {
-        setActiveIndex(0)
-        setIsExpanded(false) // Reset expansion on tab change
-    }, [activeTab])
 
     useEffect(() => {
         if (selectedVideo) {
@@ -283,20 +250,6 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
 
     return (
         <div className="cgi-gallery" style={{ width: '100%', position: 'relative' }}>
-            <div className="cgi-tabs-container">
-                {Object.keys(CGI_DATA).map(tab => (
-                    <button
-                        key={tab}
-                        onClick={() => {
-                            setActiveTab(tab)
-                            setActiveIndex(0)
-                        }}
-                        className={`cgi-tab-btn ${activeTab === tab ? 'active' : ''}`}
-                    >
-                        {tab}
-                    </button>
-                ))}
-            </div>
 
             <p style={{
                 textAlign: 'center',
@@ -339,7 +292,7 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
                         const isCenter = index === activeIndex
                         return (
                             <motion.div
-                                key={`${activeTab}-${item.id}-${index}`}
+                                key={`cgi-${item.id}-${index}`}
                                 onClick={() => isCenter && onVideoSelect(item)}
                                 initial={false}
                                 animate={style}
@@ -358,9 +311,9 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
                             >
                                 <LazyVideo
                                     src={item.src}
-                                    forcedPause={true}
-                                    autoPlay={false}
-                                    muted={isCenter ? isCenterMuted : true}
+                                    forcedPause={!isCenter}
+                                    autoPlay={isCenter}
+                                    muted={true}
                                     loop
                                     playsInline
                                     style={{
@@ -380,30 +333,10 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
                                         background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)',
                                         color: '#fff',
                                         display: 'flex',
-                                        justifyContent: 'space-between',
+                                        justifyContent: 'center',
                                         alignItems: 'center'
                                     }}>
                                         <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>View Project</span>
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setIsCenterMuted(!isCenterMuted);
-                                            }}
-                                            style={{
-                                                background: 'rgba(255,255,255,0.1)',
-                                                border: 'none',
-                                                borderRadius: '50%',
-                                                width: '32px',
-                                                height: '32px',
-                                                cursor: 'pointer',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                color: '#fff'
-                                            }}
-                                        >
-                                            {isCenterMuted ? '🔇' : '🔊'}
-                                        </button>
                                     </div>
                                 )}
                             </motion.div>
@@ -416,115 +349,6 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
                         <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                 </button>
-            </div>
-
-            {/* View More Button & Expanded Grid */}
-            <div className="cgi-expansion-container" style={{ marginTop: '3rem', width: '100%' }}>
-                <AnimatePresence>
-                    {!isExpanded && extraItems.length > 0 && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            style={{ display: 'flex', justifyContent: 'center' }}
-                        >
-                            <div
-                                onClick={() => setIsExpanded(true)}
-                                style={{ cursor: 'pointer' }}
-                            >
-                                <GlassSurface
-                                    width={240}
-                                    height={55}
-                                    borderRadius={50}
-                                    blur={10}
-                                    opacity={0.3}
-                                    backgroundOpacity={0.15}
-                                    borderWidth={0.5}
-                                    brightness={30}
-                                    mixBlendMode="screen"
-                                >
-                                    <div style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '12px',
-                                        color: '#fff',
-                                        fontWeight: 600,
-                                        fontSize: '0.9rem',
-                                        letterSpacing: '0.1em',
-                                        textTransform: 'uppercase'
-                                    }}>
-                                        <span>View All Videos</span>
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                            <path d="M7 13l5 5 5-5M7 6l5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
-                                        </svg>
-                                    </div>
-                                </GlassSurface>
-                            </div>
-                        </motion.div>
-                    )}
-
-                    {isExpanded && (
-                        <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                            style={{ overflow: 'hidden' }}
-                        >
-                            <div style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                                gap: '2rem',
-                                padding: '0 2rem'
-                            }}>
-                                {extraItems.map((item) => (
-                                    <motion.div
-                                        key={`extra-${item.id}`}
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ duration: 0.5 }}
-                                        onClick={() => onVideoSelect(item)}
-                                        style={{
-                                            aspectRatio: item.type === 'vertical' ? '9/16' : '16/9',
-                                            borderRadius: '12px',
-                                            overflow: 'hidden',
-                                            border: '1px solid rgba(255,255,255,0.1)',
-                                            cursor: 'pointer',
-                                            position: 'relative',
-                                            boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
-                                        }}
-                                        whileHover={{ scale: 1.02, borderColor: '#2fccef' }}
-                                    >
-                                        <LazyVideo
-                                            src={item.src}
-                                            autoPlay={false}
-                                            muted={true}
-                                            loop
-                                            playsInline
-                                            style={{
-                                                width: '100%',
-                                                height: '100%',
-                                                objectFit: 'cover'
-                                            }}
-                                        />
-                                        <div style={{
-                                            position: 'absolute',
-                                            inset: 0,
-                                            background: 'rgba(0,0,0,0.2)',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            opacity: 0,
-                                            transition: 'opacity 0.3s'
-                                        }} className="hover-overlay">
-                                            <span style={{ background: 'rgba(47, 204, 239, 0.9)', color: '#000', padding: '8px 16px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 600 }}>Play Project</span>
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
             </div>
         </div>
     )
@@ -539,6 +363,7 @@ export const PopupVideoPlayer = ({ src }) => {
             <video
                 src={src}
                 ref={videoRef}
+                preload='metadata'
                 autoPlay
                 loop
                 muted={isMuted}
