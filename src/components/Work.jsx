@@ -1,6 +1,25 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
+// Hook to detect mobile device
+const useIsMobile = () => {
+    const [isMobile, setIsMobile] = useState(false)
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768)
+        }
+
+        // Initial check
+        checkMobile()
+
+        window.addEventListener('resize', checkMobile)
+        return () => window.removeEventListener('resize', checkMobile)
+    }, [])
+
+    return isMobile
+}
+
 const LazyVideo = ({ src, style, forcedPause, ...props }) => {
     const videoRef = useRef(null)
     const [isLoaded, setIsLoaded] = useState(false)
@@ -36,9 +55,12 @@ const LazyVideo = ({ src, style, forcedPause, ...props }) => {
         if (forcedPause || !props.autoPlay) {
             videoRef.current.pause()
         } else if (props.autoPlay) {
-            videoRef.current.play().catch(() => { /* Autoplay prevented */ })
+            // Only attempt to play if we have a valid source
+            if (videoRef.current.src && videoRef.current.src !== window.location.href) {
+                videoRef.current.play().catch(() => { /* Autoplay prevented */ })
+            }
         }
-    }, [isLoaded, props.autoPlay, forcedPause])
+    }, [isLoaded, props.autoPlay, forcedPause, src])
 
     return (
         <video
@@ -186,11 +208,11 @@ const HorizontalVideo = ({ src, className, style, isPaused }) => {
 }
 
 const CGI_DATA = [
-    { id: 1, type: 'vertical', src: '/cgi/FINVID1.mp4' },
-    { id: 2, type: 'vertical', src: '/cgi/FINVID2.mp4' },
-    { id: 3, type: 'vertical', src: '/cgi/FINVID3.mp4' },
-    { id: 4, type: 'vertical', src: '/cgi/FINVID4.mp4' },
-    { id: 5, type: 'vertical', src: '/cgi/FINVID5.mp4' },
+    { id: 1, type: 'vertical', src: '/cgi/FINALV1.webm' },
+    { id: 2, type: 'vertical', src: '/cgi/FINALV2.webm' },
+    { id: 3, type: 'vertical', src: '/cgi/FINALV3.webm' },
+    { id: 4, type: 'vertical', src: '/cgi/FINALV4.webm' },
+    { id: 5, type: 'vertical', src: '/cgi/FINALV5.webm' },
 ]
 
 import GlassSurface from './GlassSurface'
@@ -199,6 +221,7 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
     const [activeIndex, setActiveIndex] = useState(0)
     const [isTransitioning, setIsTransitioning] = useState(false)
     const pauseTimeoutRef = useRef(null)
+    const isMobile = useIsMobile()
 
     const carouselItems = CGI_DATA
 
@@ -231,7 +254,6 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
         if (diff > carouselItems.length / 2) diff -= carouselItems.length
 
         const isActive = diff === 0
-        const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
         const offsetMultiplier = isMobile ? 140 : 260
         const xOffset = diff * offsetMultiplier
         const scale = isActive ? (isMobile ? 1.05 : 1.1) : 0.75
@@ -265,7 +287,7 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
 
             <div className="cgi-carousel-wrapper" style={{
                 perspective: '1200px',
-                height: typeof window !== 'undefined' && window.innerWidth < 768 ? '450px' : '650px',
+                height: isMobile ? '450px' : '650px',
                 position: 'relative',
                 display: 'flex',
                 alignItems: 'center',
@@ -291,6 +313,10 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
                     {carouselItems.map((item, index) => {
                         const style = getCardStyle(index)
                         const isCenter = index === activeIndex
+
+                        // Mobile Optimization: Only load the center video to save resources
+                        const shouldLoad = !isMobile || isCenter
+
                         return (
                             <motion.div
                                 key={`cgi-${item.id}-${index}`}
@@ -301,8 +327,8 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
                                 style={{
                                     position: 'absolute',
                                     transformStyle: 'preserve-3d',
-                                    width: typeof window !== 'undefined' && window.innerWidth < 768 ? '220px' : '400px',
-                                    height: typeof window !== 'undefined' && window.innerWidth < 768 ? '350px' : '550px',
+                                    width: isMobile ? '220px' : '400px',
+                                    height: isMobile ? '350px' : '550px',
                                     cursor: isCenter ? 'pointer' : 'default',
                                     borderRadius: '12px',
                                     overflow: 'hidden',
@@ -311,7 +337,7 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
                                 }}
                             >
                                 <LazyVideo
-                                    src={item.src}
+                                    src={shouldLoad ? item.src : undefined}
                                     forcedPause={!isCenter}
                                     autoPlay={isCenter}
                                     muted={true}
@@ -418,13 +444,14 @@ export default function Work({ selectedVideo, onVideoSelect }) {
     const [isTransitioning, setIsTransitioning] = useState(false)
     const [isCenterMuted, setIsCenterMuted] = useState(true)
     const pauseTimeoutRef = useRef(null)
+    const isMobile = useIsMobile()
 
     const videos = [
-        { id: 1, src: '/vertical-vids/1.mp4', title: 'Video editing project 1' },
-        { id: 2, src: '/vertical-vids/2.mp4', title: 'Video editing project 2' },
-        { id: 3, src: '/vertical-vids/3.mp4', title: 'Video editing project 3' },
-        { id: 4, src: '/vertical-vids/4.mp4', title: 'Video editing project 4' },
-        { id: 5, src: '/vertical-vids/5.mp4', title: 'Video editing project 5' }
+        { id: 1, src: '/vertical-vids/1.webm', title: 'Video editing project 1' },
+        { id: 2, src: '/vertical-vids/2.webm', title: 'Video editing project 2' },
+        { id: 3, src: '/vertical-vids/3.webm', title: 'Video editing project 3' },
+        { id: 4, src: '/vertical-vids/4.webm', title: 'Video editing project 4' },
+        { id: 5, src: '/vertical-vids/5.webm', title: 'Video editing project 5' }
     ]
 
     const goToNext = useCallback(() => {
@@ -456,7 +483,6 @@ export default function Work({ selectedVideo, onVideoSelect }) {
         if (diff > videos.length / 2) diff -= videos.length
 
         const isActive = diff === 0
-        const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
         const offsetMultiplier = isMobile ? 120 : 220
         const xOffset = diff * offsetMultiplier
         const scale = isActive ? (isMobile ? 1.1 : 1.2) : 0.8
@@ -502,6 +528,10 @@ export default function Work({ selectedVideo, onVideoSelect }) {
                         {videos.map((video, index) => {
                             const style = getCardStyle(index)
                             const isCenter = index === activeIndex
+
+                            // Mobile Optimization: Only load/play center video
+                            const shouldLoad = !isMobile || isCenter
+
                             return (
                                 <motion.div
                                     key={`${video.id}-${index}`}
@@ -519,14 +549,14 @@ export default function Work({ selectedVideo, onVideoSelect }) {
                                     style={{
                                         position: 'absolute',
                                         transformStyle: 'preserve-3d',
-                                        width: typeof window !== 'undefined' && window.innerWidth < 768 ? '180px' : '280px',
-                                        height: typeof window !== 'undefined' && window.innerWidth < 768 ? '320px' : '500px',
+                                        width: isMobile ? '180px' : '280px',
+                                        height: isMobile ? '320px' : '500px',
                                         left: '50%',
-                                        marginLeft: typeof window !== 'undefined' && window.innerWidth < 768 ? '-90px' : '-140px'
+                                        marginLeft: isMobile ? '-90px' : '-140px'
                                     }}
                                 >
                                     <LazyVideo
-                                        src={video.src}
+                                        src={shouldLoad ? video.src : undefined}
                                         forcedPause={!!selectedVideo || !isCenter}
                                         autoPlay={isCenter}
                                         muted={isCenter ? isCenterMuted : true}
