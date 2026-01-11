@@ -1705,6 +1705,41 @@ section {
   animation-play-state: paused;
 }
 
+/* Mobile Tech Strip Optimization */
+@media (max-width: 768px) {
+  .tech-strip-track {
+    animation: none !important;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding: 0 1rem;
+    width: 100%;
+    white-space: normal;
+  }
+  
+  .tech-item {
+    margin-right: 0;
+  }
+  
+  .tech-name {
+    display: none;
+  }
+  
+  .tech-separator {
+    display: none;
+  }
+
+  .tech-logo {
+    margin-right: 0 !important;
+    height: 32px !important; /* Slightly larger on mobile for better visibility */
+    filter: grayscale(0) brightness(1) !important; /* Always colored on mobile */
+  }
+
+  .tech-strip-overlay {
+    display: none;
+  }
+}
+
 /* Glass Surface Styles */
 .glass-surface {
   position: relative;
