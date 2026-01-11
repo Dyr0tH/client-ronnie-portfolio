@@ -1,12 +1,32 @@
 import { motion, useScroll, useTransform, useMotionValue } from 'framer-motion'
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import GlassSurface from './GlassSurface'
 import Plasma from './Plasma'
+
+// Hook to detect mobile device
+const useIsMobile = () => {
+    const [isMobile, setIsMobile] = useState(false)
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768)
+        }
+
+        // Initial check
+        checkMobile()
+
+        window.addEventListener('resize', checkMobile)
+        return () => window.removeEventListener('resize', checkMobile)
+    }, [])
+
+    return isMobile
+}
 
 export default function Hero() {
     const containerRef = useRef(null)
     const { scrollY } = useScroll()
     const y = useTransform(scrollY, [0, 500], [0, 200])
+    const isMobile = useIsMobile()
 
     const mouseX = useMotionValue(0)
     const mouseY = useMotionValue(0)
@@ -32,7 +52,7 @@ export default function Hero() {
                 minHeight: '100vh'
             }}
         >
-            {/* Plasma Background Effect */}
+            {/* Background Effect */}
             <div style={{
                 position: 'absolute',
                 inset: 0,
@@ -41,14 +61,75 @@ export default function Hero() {
                 zIndex: 1,
                 opacity: 0.6 // Slight dim for better text readability
             }}>
-                <Plasma
-                    color="#057affff"
-                    speed={1}
-                    direction="forward"
-                    scale={1.8}
-                    opacity={0.8}
-                    mouseInteractive={false}
-                />
+                {isMobile ? (
+                    <div style={{
+                        width: '100%',
+                        height: '100%',
+                        background: '#000',
+                        position: 'relative',
+                        overflow: 'hidden'
+                    }}>
+                        <motion.div
+                            animate={{
+                                scale: [1, 1.2, 1],
+                                rotate: [0, 10, -10, 0],
+                                x: [0, 20, -20, 0],
+                                y: [0, -20, 20, 0]
+                            }}
+                            transition={{
+                                duration: 10,
+                                repeat: Infinity,
+                                ease: "easeInOut"
+                            }}
+                            style={{
+                                position: 'absolute',
+                                top: '20%',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                width: '300px',
+                                height: '300px',
+                                borderRadius: '50%',
+                                background: 'linear-gradient(135deg, #2fccef 0%, #006eff 100%)',
+                                filter: 'blur(80px)',
+                                opacity: 0.3
+                            }}
+                        />
+                        <motion.div
+                            animate={{
+                                scale: [1.2, 1, 1.2],
+                                rotate: [0, -10, 10, 0],
+                                x: [0, -30, 30, 0],
+                                y: [0, 30, -30, 0]
+                            }}
+                            transition={{
+                                duration: 15,
+                                repeat: Infinity,
+                                ease: "easeInOut"
+                            }}
+                            style={{
+                                position: 'absolute',
+                                bottom: '20%',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                width: '350px',
+                                height: '350px',
+                                borderRadius: '50%',
+                                background: 'linear-gradient(135deg, #006eff 0%, #2fccef 100%)',
+                                filter: 'blur(90px)',
+                                opacity: 0.2
+                            }}
+                        />
+                    </div>
+                ) : (
+                    <Plasma
+                        color="#057affff"
+                        speed={1}
+                        direction="forward"
+                        scale={1.8}
+                        opacity={0.8}
+                        mouseInteractive={false}
+                    />
+                )}
             </div>
 
             <div className="hero-content-centered" style={{ position: 'relative', zIndex: 10 }}>
