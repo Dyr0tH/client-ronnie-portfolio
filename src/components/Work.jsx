@@ -313,9 +313,12 @@ const CGIGallery = ({ onVideoSelect, selectedVideo }) => {
                     {carouselItems.map((item, index) => {
                         const style = getCardStyle(index)
                         const isCenter = index === activeIndex
+                        const nextIndex = (activeIndex + 1) % carouselItems.length
+                        const isNext = index === nextIndex
 
-                        // Mobile Optimization: Only load the center video to save resources
-                        const shouldLoad = !isMobile || isCenter
+                        // Mobile Optimization: Load center video and preload next video
+                        // Unload others to save memory
+                        const shouldLoad = !isMobile || isCenter || isNext
 
                         return (
                             <motion.div
@@ -528,9 +531,12 @@ export default function Work({ selectedVideo, onVideoSelect }) {
                         {videos.map((video, index) => {
                             const style = getCardStyle(index)
                             const isCenter = index === activeIndex
+                            const nextIndex = (activeIndex + 1) % videos.length
+                            const isNext = index === nextIndex
 
-                            // Mobile Optimization: Only load/play center video
-                            const shouldLoad = !isMobile || isCenter
+                            // Mobile Optimization: Load center video and preload next video
+                            // Unload others to save memory
+                            const shouldLoad = !isMobile || isCenter || isNext
 
                             return (
                                 <motion.div
