@@ -25,8 +25,9 @@ const useIsMobile = () => {
 export default function Hero() {
     const containerRef = useRef(null)
     const { scrollY } = useScroll()
-    const y = useTransform(scrollY, [0, 500], [0, 200])
     const isMobile = useIsMobile()
+    // Disable parallax on mobile to prevent jitter/stagger
+    const y = useTransform(scrollY, [0, 500], isMobile ? [0, 0] : [0, 200])
 
     const mouseX = useMotionValue(0)
     const mouseY = useMotionValue(0)
