@@ -10,8 +10,8 @@ export default function Contact() {
                 </svg>
             ),
             label: "Email",
-            value: "metacreationstudio@gmail.com",
-            link: "mailto:metacreationstudio@gmail.com",
+            value: "ronitingle81@gmail.com",
+            link: "mailto:ronitingle81@gmail.com",
             color: "#2fccef"
         },
         {
@@ -34,8 +34,8 @@ export default function Contact() {
                 </svg>
             ),
             label: "Instagram",
-            value: "@metacreation_studio",
-            link: "https://www.instagram.com/metacreation_studio",
+            value: "@ronnvisuals.360",
+            link: "https://www.instagram.com/ronnievisuals.360/",
             color: "#e1306c"
         }
     ]
